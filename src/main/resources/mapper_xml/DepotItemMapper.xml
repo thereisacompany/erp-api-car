@@ -151,6 +151,9 @@
       #{expirationDate,jdbcType=TIMESTAMP}, #{linkId,jdbcType=BIGINT}, #{tenantId,jdbcType=BIGINT}, 
       #{deleteFlag,jdbcType=VARCHAR})
   </insert>
+
+
+
   <insert id="insertSelective" parameterType="com.erp.car.report.entities.DepotItem">
     insert into jsh_depot_item
     <trim prefix="(" suffix=")" suffixOverrides=",">

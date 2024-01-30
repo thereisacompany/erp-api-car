@@ -296,6 +296,7 @@ public class DepotHeadController {
                                                  @RequestParam(value = "organId", required = false) Integer organId,
                                                  @RequestParam("supplierType") String supplierType,
                                                  HttpServletRequest request) throws Exception{
+        System.out.println("??????????");
         BaseResponseInfo res = new BaseResponseInfo();
         Map<String, Object> map = new HashMap<String, Object>();
         try {

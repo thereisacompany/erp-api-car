@@ -10,6 +10,7 @@
         <result column="MNumber" jdbcType="VARCHAR" property="MNumber" />
         <result column="depotName" jdbcType="VARCHAR" property="depotName" />
         <result column="counterName" jdbcType="VARCHAR" property="counterName" />
+        <result column="DStatus" jdbcType="VARCHAR" property="dStatus" />
         <result column="contacts" jdbcType="VARCHAR" property="contacts" />
         <result column="telephone" jdbcType="VARCHAR" property="telephone" />
         <result column="address" jdbcType="VARCHAR" property="address" />
@@ -182,6 +183,87 @@
             limit #{offset},#{rows}
         </if>
     </select>
+
+    <select id="selectCarByConditionDepotHead" parameterType="com.erp.car.report.entities.DepotHeadExample" resultMap="ResultMapEx">
+        select distinct dh.*, s.supplier OrganName, u.username userName, a.name AccountName,
+        me.`number` MNumber, jd.name depotName, di.id SubId, di.counter_name counterName
+        from jsh_depot_head dh
+        left join jsh_depot_item di on dh.id = di.header_id and ifnull(di.delete_flag,'0') !='1'
+        left join jsh_supplier s on dh.organ_id=s.id and ifnull(s.delete_Flag,'0') !='1'
+        left join jsh_user u on dh.creator=u.id and ifnull(u.Status,'0') !='1'
+        left join jsh_account a on dh.account_id=a.id and ifnull(a.delete_Flag,'0') !='1'
+        left join jsh_material m on di.material_id = m.id and ifnull(m.delete_flag,'0') !='1'
+        left join jsh_material_extend me on di.material_extend_id = me.id and ifnull(me.delete_flag,'0') !='1'
+        left join jsh_depot jd on di.depot_id = jd.id
+        where 1=1
+        <if test="type != null">
+            and dh.type=#{type}
+        </if>
+        <if test="subType != null">
+            and dh.sub_type=#{subType}
+        </if>
+
+        and dh.status in (0,1)
+
+
+        <if test="number != null">
+            <bind name="bindNumber" value="'%'+number+'%'"/>
+            and dh.number like #{bindNumber}
+        </if>
+        <if test="linkNumber != null">
+            <bind name="bindLinkNumber" value="'%'+linkNumber+'%'"/>
+            and dh.link_number like #{bindLinkNumber}
+        </if>
+        <if test="beginTime != null">
+            and dh.oper_time >= #{beginTime}
+        </if>
+        <if test="endTime != null">
+            and dh.oper_time &lt;= #{endTime}
+        </if>
+
+        <if test="keyword != null and keyword !=''">
+            <bind name="bindKey" value="'%'+keyword+'%'"/>
+            and (dh.number like #{bindKey}
+            or s.supplier LIKE #{bindKey} OR s.supplierall LIKE #{bindKey}
+            or me.bar_code like #{bindKey} or m.name like #{bindKey} or m.standard like #{bindKey} or m.model like #{bindKey}
+            or m.color like #{bindKey} or m.mfrs like #{bindKey} or m.other_field1 like #{bindKey}
+            or m.other_field2 like #{bindKey} or m.other_field3 like #{bindKey})
+        </if>
+        <if test="organId != null">
+            and dh.organ_id=#{organId}
+        </if>
+
+        <if test="MNumber != null">
+            <bind name="bindMNumber" value="'%'+MNumber+'%'"/>
+            and me.`number` like #{bindMNumber}
+        </if>
+        <if test="creator != null">
+            and dh.creator=#{creator}
+        </if>
+        <if test="depotId != null">
+            and di.depot_id=#{depotId}
+        </if>
+
+
+        <if test="counterId != null">
+            and di.counter_id=#{counterId}
+        </if>
+        <if test="accountId != null">
+            <bind name="bindAccountId" value="'%'+accountId+'%'"/>
+            and (dh.account_id=#{accountId} or dh.account_id_list like #{bindAccountId})
+        </if>
+
+        <if test="remark != null and remark !=''">
+            <bind name="bindRemark" value="'%'+remark+'%'"/>
+            and (dh.remark like #{bindRemark} or di.remark like #{bindRemark})
+        </if>
+        and ifnull(dh.delete_flag,'0') !='1'
+        order by dh.id desc
+        <if test="offset != null and rows != null">
+            limit #{offset},#{rows}
+        </if>
+    </select>
+
     <select id="countsByDepotHead" resultType="java.lang.Long">
         SELECT
         COUNT(1) from
@@ -1090,4 +1172,5 @@
 <!--        </if>-->
         and ifnull(delete_flag,'0') !='1'
     </select>
+
 </mapper>

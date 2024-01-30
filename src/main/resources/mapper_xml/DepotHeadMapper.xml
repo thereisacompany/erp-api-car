@@ -46,6 +46,26 @@
     <result column="tenant_id" jdbcType="BIGINT" property="tenantId" />
     <result column="delete_flag" jdbcType="VARCHAR" property="deleteFlag" />
   </resultMap>
+  <resultMap id="StatusResultMap" type="com.erp.car.report.vo.DeliveryStatus">
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="date" jdbcType="VARCHAR" property="date" />
+  </resultMap>
+  <resultMap id="ReportResultMap" type="com.erp.car.report.entities.DepotReport">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="datetime" jdbcType="TIMESTAMP" property="datetime" />
+    <result column="message" jdbcType="VARCHAR" property="message" />
+    <result column="feedback" jdbcType="VARCHAR" property="feedback" />
+  </resultMap>
+  <resultMap id="DetailResultMap" type="com.erp.car.report.vo.DepotHeadDetail">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="supplierId" jdbcType="BIGINT" property="supplierId" />
+    <result column="supplier" jdbcType="VARCHAR" property="supplier" />
+    <result column="assign_date" jdbcType="VARCHAR" property="assignDate" />
+    <result column="assign_user" jdbcType="VARCHAR" property="assignUser" />
+    <result column="license_plate_number" jdbcType="VARCHAR" property="licensePlateNumber" />
+    <result column="file_path" jdbcType="VARCHAR" property="filePath" />
+  </resultMap>
   <sql id="Example_Where_Clause">
     <where>
       <foreach collection="oredCriteria" item="criteria" separator="or">
@@ -839,4 +859,25 @@
       delete_flag = #{deleteFlag,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
+
+
+
+  <select id="selectDetailRecord" resultMap="StatusResultMap">
+    SELECT status, date
+    FROM jsh_depot_record
+    WHERE detail_id = ${detailId}
+    ORDER BY date DESC
+  </select>
+
+
+  <select id="selectHeaderDetailByHeaderId" resultMap="DetailResultMap">
+    SELECT jdd.id, jdd.status, js.id supplierId, js.supplier, jdd.assign_date, jdd.assign_user, jv.license_plate_number, jdd.file_path
+    FROM jsh_depot_detail jdd
+    LEFT JOIN jsh_supplier js ON jdd.driver_id = js.id
+    LEFT JOIN jsh_vehicle jv ON jv.supplier_id = js.id
+    WHERE jdd.header_id = ${headerId}
+    <if test="itemId != null">
+      AND jdd.item_id = ${itemId}
+    </if>
+  </select>
 </mapper>

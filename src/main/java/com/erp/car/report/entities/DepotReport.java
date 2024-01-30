@@ -1,4 +1,4 @@
-package com.jsh.erp.datasource.entities;
+package com.erp.car.report.entities;
 
 import lombok.Data;
 

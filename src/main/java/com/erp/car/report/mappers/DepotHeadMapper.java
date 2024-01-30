@@ -2,6 +2,8 @@ package com.erp.car.report.mappers;
 
 import com.erp.car.report.entities.DepotHead;
 import com.erp.car.report.entities.DepotHeadExample;
+import com.erp.car.report.vo.DeliveryStatus;
+import com.erp.car.report.vo.DepotHeadDetail;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -29,4 +31,9 @@ public interface DepotHeadMapper {
     int updateByPrimaryKeySelective(DepotHead record);
 
     int updateByPrimaryKey(DepotHead record);
+
+    DepotHeadDetail selectHeaderDetailByHeaderId(@Param("headerId") Long headerId,
+                                                 @Param("itemId") Long itemId);
+
+    List<DeliveryStatus> selectDetailRecord(@Param("detailId") Long detailId);
 }

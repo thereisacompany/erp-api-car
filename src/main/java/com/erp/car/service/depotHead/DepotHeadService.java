@@ -48,11 +48,13 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.erp.car.utils.Tools.getCenternTime;
 import static com.erp.car.utils.Tools.getNow3;
@@ -134,19 +136,188 @@ public class DepotHeadService {
         return list;
     }
 
+    /**
+     * 依單號取得配送狀態
+     * @param dhl
+     * @return
+     */
+    public DepotHeadDelivery getDeliveryDetail(DepotHeadVo4List dhl) {
+        DepotHeadDelivery dhd = new DepotHeadDelivery();
+        dhd.setNumber(dhl.getNumber());
+        dhd.setCustomNumber(dhl.getCustomNumber());
+        dhd.setSourceNumber(dhl.getSourceNumber());
+        dhd.setCustomName(dhl.getOrganId()+" "+dhl.getOrganName());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        dhd.setOrderDate(sdf.format(dhl.getCreateTime()));
+        JSONObject remark = JSONObject.parseObject(dhl.getRemark());
+        dhd.setMemo(remark.getString("memo"));
+
+        DepotHeadDetail detail = depotHeadMapper.selectHeaderDetailByHeaderId(dhl.getId(), null);
+        if(detail != null) {
+            dhd.setTakeDate(detail.getAssignDate());
+            dhd.setDriverId(detail.getSupplierId());
+            dhd.setDriverName(detail.getSupplier());
+            dhd.setCarNumber(detail.getLicensePlateNumber());
+            if(detail.getAssignUser() != null) {
+                dhd.setAssignUser(Long.parseLong(detail.getAssignUser()));
+            } else {
+                dhd.setAssignUser(null);
+            }
+            dhd.setFilePath(detail.getFilePath());
+            dhd.setStatus(detail.getStatus());
+
+            List<DeliveryStatus> statusList = depotHeadMapper.selectDetailRecord(detail.getId());
+            if(statusList.size() > 0) {
+                List<DeliveryStatus> list = new ArrayList<>();
+                AtomicInteger nowStatus = new AtomicInteger(statusList.get(0).getStatus());
+                statusList.stream().forEach(record -> {
+                    if (record.getStatus() <= nowStatus.get()) {
+                        nowStatus.set(record.getStatus());
+                        list.add(record);
+                    }
+                });
+                dhd.setDeliveryStatusList(list);
+            } else {
+                dhd.setDeliveryStatusList(new ArrayList<DeliveryStatus>());
+            }
+
+        }
+        return dhd;
+    }
+
+
+
+    public List<DepotHeadVo4List> selectCar(String type, String subType, String roleType, String hasDebt, String status,
+                                         String purchaseStatus, String number, String linkNumber, String beginTime,
+                                         String endTime, String materialParam, String keyword, Long organId, String MNumber, Long creator,
+                                         Long depotId, Long counterId, Long accountId, String remark, int offset, int rows) throws Exception {
+        List<DepotHeadVo4List> resList = new ArrayList<>();
+
+        try{
+        List<DepotHeadVo4List> list = depotHeadMapperEx.selectCarByConditionDepotHead(type, subType, number, linkNumber, beginTime, endTime,
+              keyword, organId, MNumber, creator, depotId, counterId, accountId, remark, offset, rows);
+            if(list !=null) {
+                for (DepotHeadVo4List dh : list) {
+                    String mKey = dh.getId() + "" + dh.getSubId() + "" + dh.getMNumber();
+
+                    //客單編號
+                    if (dh.getCustomNumber() != null) {
+                        dh.setCustomNumber(dh.getCustomNumber().split("-")[0]);
+                    }
+                    //原始客編
+                    if (dh.getSourceNumber() != null) {
+                        dh.setSourceNumber(dh.getSourceNumber().split("-")[0]);
+                    }
+
+
+                    if (dh.getAccountIdList() != null) {
+                        String accountidlistStr = dh.getAccountIdList().replace("[", "").replace("]", "").replaceAll("\"", "");
+                        dh.setAccountIdList(accountidlistStr);
+                    }
+                    if (dh.getAccountMoneyList() != null) {
+                        String accountmoneylistStr = dh.getAccountMoneyList().replace("[", "").replace("]", "").replaceAll("\"", "");
+                        dh.setAccountMoneyList(accountmoneylistStr);
+                    }
+                    if (dh.getChangeAmount() != null) {
+                        dh.setChangeAmount(dh.getChangeAmount().abs());
+                    }
+                    if (dh.getTotalPrice() != null) {
+                        dh.setTotalPrice(dh.getTotalPrice().abs());
+                    }
+                    if (dh.getDeposit() == null) {
+                        dh.setDeposit(BigDecimal.ZERO);
+                    }
+
+                    //欠款计算
+                    BigDecimal discountLastMoney = dh.getDiscountLastMoney() != null ? dh.getDiscountLastMoney() : BigDecimal.ZERO;
+                    BigDecimal otherMoney = dh.getOtherMoney() != null ? dh.getOtherMoney() : BigDecimal.ZERO;
+                    BigDecimal changeAmount = dh.getChangeAmount() != null ? dh.getChangeAmount() : BigDecimal.ZERO;
+                    dh.setDebt(discountLastMoney.add(otherMoney).subtract((dh.getDeposit().add(changeAmount))));
+                    //是否有付款单或收款单
+//                    if(financialBillNoMap!=null) {
+//                        Integer financialBillNoSize = financialBillNoMap.get(dh.getId());
+//                        dh.setHasFinancialFlag(financialBillNoSize!=null && financialBillNoSize>0);
+//                    }
+//                    //是否有退款单
+//                    if(billSizeMap!=null) {
+//                        Integer billListSize = billSizeMap.get(dh.getNumber());
+//                        dh.setHasBackFlag(billListSize!=null && billListSize>0);
+//                    }
+//                    if(StringUtil.isNotEmpty(dh.getSalesMan())) {
+//                        dh.setSalesManStr(personService.getPersonByMapAndIds(personMap,dh.getSalesMan()));
+//                    }
+//                    if(dh.getOperTime() != null) {
+//                        dh.setOperTimeStr(getCenternTime(dh.getOperTime()));
+//                    }
+//                    //商品信息简述
+//                    if(materialsListMap!=null) {
+//                        MaterialsListVo vo = materialsListMap.get(mKey);
+//                        dh.setMaterialsList(vo.getMaterialsList());
+//                        dh.setMaterialCount(vo.getMaterialCount());
+//                    }
+                    //商品总数量
+//                    if(materialCountListMap!=null) {
+//                        dh.setMaterialCount(materialCountListMap.get(dh.getId()));
+//                    }
+                    //以销定购的情况（不能显示销售单据的金额和客户名称）
+                    if (StringUtil.isNotEmpty(purchaseStatus)) {
+                        dh.setOrganName("****");
+                        dh.setTotalPrice(null);
+                        dh.setDiscountLastMoney(null);
+                    }
+                    String showId = String.format("%03d", dh.getOrganId());
+                    dh.setOrganName(showId + " " + dh.getOrganName());
+
+                    if (dh.getCounterName() == null) {
+                        dh.setCounterName("");
+                    }
+
+                    // 配送單要額外處理remark
+                    if (dh.getType().equals(BusinessConstants.DEPOTHEAD_TYPE_OUT)) {
+                        if (dh.getRemark() != null && !dh.getRemark().isEmpty()) {
+                            JSONObject json = JSONObject.parseObject(dh.getRemark());
+                            dh.setInstall(json.getString("install"));
+                            dh.setRecycle(json.getString("recycle"));
+                            dh.setRemark(json.getString("memo"));
+                        } else {
+                            dh.setInstall("");
+                            dh.setRecycle("");
+                        }
+                    }
+
+                    resList.add(dh);
+                }
+            }
+        }catch(Exception e){
+            JshException.readFail(logger, e);
+        }
+            return resList;
+
+    }
+
+
+
+
+
+
+
     public List<DepotHeadVo4List> select(String type, String subType, String roleType, String hasDebt, String status,
                                          String purchaseStatus, String number, String linkNumber, String beginTime,
                                          String endTime, String materialParam, String keyword, Long organId, String MNumber, Long creator,
                                          Long depotId, Long counterId, Long accountId, String remark, int offset, int rows) throws Exception {
         List<DepotHeadVo4List> resList = new ArrayList<>();
+
         try{
             String [] depotArray = getDepotArray(subType);
             String [] creatorArray = getCreatorArray(roleType);
             String [] statusArray = StringUtil.isNotEmpty(status) ? status.split(",") : null;
             String [] purchaseStatusArray = StringUtil.isNotEmpty(purchaseStatus) ? purchaseStatus.split(",") : null;
             String [] organArray = getOrganArray(subType, purchaseStatus);
+
             Map<Long,String> personMap = personService.getPersonMap();
+
             Map<Long,String> accountMap = accountService.getAccountMap();
+
             beginTime = Tools.parseDayToTime(beginTime,BusinessConstants.DAY_FIRST_TIME);
             endTime = Tools.parseDayToTime(endTime,BusinessConstants.DAY_LAST_TIME);
             List<DepotHeadVo4List> list = depotHeadMapperEx.selectByConditionDepotHead(type, subType, creatorArray, hasDebt, statusArray, purchaseStatusArray, number, linkNumber, beginTime, endTime,
@@ -922,6 +1093,86 @@ public class DepotHeadService {
                     if(StringUtil.isNotEmpty(dh.getSalesMan())) {
                         dh.setSalesManStr(personService.getPersonByMapAndIds(personMap,dh.getSalesMan()));
                     }
+                    dh.setOperTimeStr(getCenternTime(dh.getOperTime()));
+                    //商品信息简述
+                    if(materialsListMap!=null) {
+                        MaterialsListVo vo = materialsListMap.get(String.valueOf(dh.getId()));
+                        dh.setMaterialsList(vo.getMaterialsList());
+                        dh.setCategoryId(vo.getCategoryId());
+                        dh.setMaterialNumber(vo.getMaterialNumber());
+                        dh.setMaterialCount(vo.getMaterialCount());
+                        dh.setDepotList(vo.getDepotList());
+                    }
+                    dh.setCreatorName(userService.getUser(dh.getCreator()).getUsername());
+                    resList.add(dh);
+                }
+            }
+        }catch(Exception e){
+            JshException.readFail(logger, e);
+        }
+        return resList;
+    }
+
+
+
+    public List<DepotHeadVo4List> getDetailCarByNumber(String[] number)throws Exception {
+        List<DepotHeadVo4List> resList = new ArrayList<>();
+        try{
+//            Map<Long,String> personMap = personService.getPersonMap();
+//            Map<Long,String> accountMap = accountService.getAccountMap();
+            List<DepotHeadVo4List> list = depotHeadMapperEx.getDetailByNumber(number);
+
+            System.out.println(">>>>");
+            System.out.println(list.size());
+            if (null != list) {
+                List<Long> idList = new ArrayList<>();
+                List<String> numberList = new ArrayList<>();
+                for (DepotHeadVo4List dh : list) {
+                    idList.add(dh.getId());
+                    numberList.add(dh.getNumber());
+                }
+                //通过批量查询去构造map
+                Map<Long,Integer> financialBillNoMap = getFinancialBillNoMapByBillIdList(idList);
+                Map<String,Integer> billSizeMap = getBillSizeMapByLinkNumberList(numberList);
+                Map<String, MaterialsListVo> materialsListMap = findMaterialsListMapByHeaderIdList(idList, Boolean.FALSE);
+                for (DepotHeadVo4List dh : list) {
+                    if(dh.getCustomNumber()!=null) {
+                        dh.setCustomNumber(dh.getCustomNumber().split("-")[0]);
+                    }
+                    if(dh.getSourceNumber()!=null) {
+                        dh.setSourceNumber(dh.getSourceNumber().split("-")[0]);
+                    }
+//                    if(accountMap!=null && StringUtil.isNotEmpty(dh.getAccountIdList()) && StringUtil.isNotEmpty(dh.getAccountMoneyList())) {
+//                        String accountStr = accountService.getAccountStrByIdAndMoney(accountMap, dh.getAccountIdList(), dh.getAccountMoneyList());
+//                        dh.setAccountName(accountStr);
+//                    }
+                    if(dh.getAccountIdList() != null) {
+                        String accountidlistStr = dh.getAccountIdList().replace("[", "").replace("]", "").replaceAll("\"", "");
+                        dh.setAccountIdList(accountidlistStr);
+                    }
+                    if(dh.getAccountMoneyList() != null) {
+                        String accountmoneylistStr = dh.getAccountMoneyList().replace("[", "").replace("]", "").replaceAll("\"", "");
+                        dh.setAccountMoneyList(accountmoneylistStr);
+                    }
+                    if(dh.getChangeAmount() != null) {
+                        dh.setChangeAmount(dh.getChangeAmount().abs());
+                    }
+                    if(dh.getTotalPrice() != null) {
+                        dh.setTotalPrice(dh.getTotalPrice().abs());
+                    }
+                    //是否有付款单或收款单
+                    if(financialBillNoMap!=null) {
+                        Integer financialBillNoSize = financialBillNoMap.get(dh.getId());
+                        dh.setHasFinancialFlag(financialBillNoSize!=null && financialBillNoSize>0);
+                    }
+                    //是否有退款单
+                    if(billSizeMap!=null) {
+                        Integer billListSize = billSizeMap.get(dh.getNumber());
+                        dh.setHasBackFlag(billListSize!=null && billListSize>0);
+                    }
+//                    if(StringUtil.isNotEmpty(dh.getSalesMan())) {
+//                        dh.setSalesManStr(personService.getPersonByMapAndIds(personMap,dh.getSalesMan()));
+//                    }
                     dh.setOperTimeStr(getCenternTime(dh.getOperTime()));
                     //商品信息简述
                     if(materialsListMap!=null) {

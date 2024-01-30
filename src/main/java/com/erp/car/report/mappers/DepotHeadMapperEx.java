@@ -42,6 +42,25 @@ public interface DepotHeadMapperEx {
             @Param("offset") Integer offset,
             @Param("rows") Integer rows);
 
+
+    List<DepotHeadVo4List> selectCarByConditionDepotHead(
+            @Param("type") String type,
+            @Param("subType") String subType,
+            @Param("number") String number,
+            @Param("linkNumber") String linkNumber,
+            @Param("beginTime") String beginTime,
+            @Param("endTime") String endTime,
+            @Param("keyword") String keyword,
+            @Param("organId") Long organId,
+            @Param("MNumber") String MNumber,
+            @Param("creator") Long creator,
+            @Param("depotId") Long depotId,
+            @Param("counterId") Long counterId,
+            @Param("accountId") Long accountId,
+            @Param("remark") String remark,
+            @Param("offset") Integer offset,
+            @Param("rows") Integer rows);
+
     Long countsByDepotHead(
             @Param("type") String type,
             @Param("subType") String subType,

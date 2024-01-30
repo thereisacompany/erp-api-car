@@ -1,4 +1,4 @@
-package com.jsh.erp.datasource.vo;
+package com.erp.car.report.vo;
 
 import lombok.Data;
 

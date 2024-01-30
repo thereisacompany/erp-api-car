@@ -39,8 +39,8 @@ public class SwaggerConfig {
 
 	private ApiInfo apiInfo() {
 		return new ApiInfoBuilder()
-				.title("CRM系統")		// 標題
-				.description("CRM各項資料功能")// 描述
+				.title("ERPCar系統")		// 標題
+				.description("Car各項資料功能")// 描述
 				.version("1.0.0")	// 版本
 				.license("")	// 設置許可證訊息 Apache LICENSE 2.0
 				.licenseUrl("")	// 設置許可證url位址

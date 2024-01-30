@@ -56,7 +56,42 @@ public class DepotHeadComponent implements ICommonQuery {
         Long counterId = StringUtil.parseStrLong(StringUtil.getInfo(search, "counterId"));
         Long accountId = StringUtil.parseStrLong(StringUtil.getInfo(search, "accountId"));
         String remark = StringUtil.getInfo(search, "remark");
-        return depotHeadService.select(type, subType, roleType, hasDebt, status, purchaseStatus, number, linkNumber,
+
+
+        return depotHeadService.selectCar(type, subType, roleType, hasDebt, status, purchaseStatus, number, linkNumber,
+                beginTime, endTime, materialParam, keyword, organId, MNumber, creator, depotId, counterId, accountId, remark, QueryUtils.offset(map), QueryUtils.rows(map));
+    }
+
+
+    private List<?> getDepotHeadCarList(Map<String, String> map)throws Exception {
+        String search = map.get(Constants.SEARCH);
+        String type = StringUtil.getInfo(search, "type");
+        String subType = StringUtil.getInfo(search, "subType");
+        if(type.equals(BusinessConstants.DEPOTHEAD_TYPE_OUT)) {
+            if(subType==null || (subType != null && subType.isEmpty())) {
+                subType = BusinessConstants.DEPOTHEAD_SUBTYPE_OUT;
+            }
+        }
+        String roleType = StringUtil.getInfo(search, "roleType");
+        String hasDebt = StringUtil.getInfo(search, "hasDebt");
+        String status = StringUtil.getInfo(search, "status");
+        String purchaseStatus = StringUtil.getInfo(search, "purchaseStatus");
+        String number = StringUtil.getInfo(search, "number");
+        String linkNumber = StringUtil.getInfo(search, "linkNumber");
+        String beginTime = StringUtil.getInfo(search, "beginTime");
+        String endTime = StringUtil.getInfo(search, "endTime");
+        String materialParam = StringUtil.getInfo(search, "materialParam");
+        String keyword = StringUtil.getInfo(search, "keyword");
+        Long organId = StringUtil.parseStrLong(StringUtil.getInfo(search, "organId"));
+        Long creator = StringUtil.parseStrLong(StringUtil.getInfo(search, "creator"));
+        Long depotId = StringUtil.parseStrLong(StringUtil.getInfo(search, "depotId"));
+        String MNumber = StringUtil.getInfo(search, "MNumber");
+        Long counterId = StringUtil.parseStrLong(StringUtil.getInfo(search, "counterId"));
+        Long accountId = StringUtil.parseStrLong(StringUtil.getInfo(search, "accountId"));
+        String remark = StringUtil.getInfo(search, "remark");
+
+
+        return depotHeadService.selectCar(type, subType, roleType, hasDebt, status, purchaseStatus, number, linkNumber,
                 beginTime, endTime, materialParam, keyword, organId, MNumber, creator, depotId, counterId, accountId, remark, QueryUtils.offset(map), QueryUtils.rows(map));
     }
 
