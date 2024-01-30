@@ -8,7 +8,7 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
 @SpringBootApplication
 @ServletComponentScan
 public class CarServerApplication implements CommandLineRunner {
-
+//測試
     public static void main(String[] args) {
         SpringApplication.run(CarServerApplication.class, args);
     }
