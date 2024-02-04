@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping(value = "/v1/frontend")
+@RequestMapping(value = "/frontend")
 @Api(tags = {"司機前端管理"})
 public class FrontEndController {
 
