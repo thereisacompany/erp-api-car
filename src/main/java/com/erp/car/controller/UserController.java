@@ -7,6 +7,7 @@ import com.erp.car.constants.BusinessConstants;
 import com.erp.car.constants.ExceptionConstants;
 import com.erp.car.report.entities.Tenant;
 import com.erp.car.report.entities.User;
+import com.erp.car.report.entities.UserCar;
 import com.erp.car.report.entities.UserEx;
 import com.erp.car.report.vo.TreeNodeEx;
 import com.erp.car.exception.BusinessParamCheckingException;
@@ -172,21 +173,24 @@ public class UserController {
     }
 
     @GetMapping(value = "/getUserSession")
-    @ApiOperation(value = "获取用户信息")
+    @ApiOperation(value = "取得司機Info信息")
     public BaseResponseInfo getSessionUser(HttpServletRequest request)throws Exception {
         BaseResponseInfo res = new BaseResponseInfo();
         try {
             Map<String, Object> data = new HashMap<>();
-            Long userId = Long.parseLong(redisService.getObjectFromSessionByKey(request,"userId").toString());
-            User user = userService.getUser(userId);
-            user.setPassword(null);
+            Long userId = Long.parseLong(redisService.getObjectFromSessionByKey(request,"CaruserId").toString());
+            System.out.println(userId);
+//            User user = userService.getUser(userId);
+            UserCar user = userService.getCarUser(userId);
+            System.out.println(user.getUsername());
+//            user.setPassword(null);
             data.put("user", user);
             res.code = 200;
             res.data = data;
         } catch(Exception e){
             e.printStackTrace();
             res.code = 500;
-            res.data = "获取session失败";
+            res.data = "擷取User Info失败";
         }
         return res;
     }
@@ -254,6 +258,8 @@ public class UserController {
             return returnJson(objectMap, ERROR, ErpInfo.ERROR.code);
         }
     }
+
+
 
     /**
      * 获取全部用户数据列表

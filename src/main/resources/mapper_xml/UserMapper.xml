@@ -8,6 +8,11 @@
     <result column="password" jdbcType="VARCHAR" property="password" />
     <result column="supplier_id" jdbcType="BIGINT" property="supplier_id" />
   </resultMap>
+  <resultMap id="CarResultMap" type="com.erp.car.report.entities.UserCar">
+    <id column="id" jdbcType="BIGINT" property="id" />
+
+
+  </resultMap>
   <sql id="Example_Where_Clause">
     <where>
       <foreach collection="oredCriteria" item="criteria" separator="or">
@@ -85,10 +90,24 @@
     </if>
   </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
-    from jsh_user
+    from jsh_caruser jcu
+    inner join jsh_supplier jsu on jcu.
+
     where id = #{id,jdbcType=BIGINT}
+  </select>
+
+  <select id="selectCarByPrimaryKey" parameterType="java.lang.Long" resultMap="CarResultMap">
+    select
+    jc.id as id,
+    jc.username as username,
+    "" as membernumber,
+    js.license_plate as licenseplate
+    from jsh_caruser jc
+    inner join jsh_supplier js
+    on jc.supplier_id =js.id
+    where jc.id = #{id,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from jsh_user

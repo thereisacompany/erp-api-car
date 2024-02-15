@@ -70,6 +70,17 @@ public class UserService {
         return result;
     }
 
+    public UserCar getCarUser(long id)throws Exception {
+        UserCar result=null;
+        try{
+            result=userMapper.selectCarByPrimaryKey(id);
+        }catch(Exception e){
+            JshException.readFail(logger, e);
+        }
+        return result;
+    }
+
+
     public List<User> getUserListByIds(String ids)throws Exception {
         List<Long> idList = StringUtil.strToLongList(ids);
         List<User> list = new ArrayList<>();

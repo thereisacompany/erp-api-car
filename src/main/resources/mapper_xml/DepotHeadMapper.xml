@@ -880,4 +880,9 @@
       AND jdd.item_id = ${itemId}
     </if>
   </select>
+
+
+  <update id="update" parameterType="com.erp.car.report.entities.CarOrderStatus">
+
+  </update>
 </mapper>

@@ -1,6 +1,7 @@
 package com.erp.car.report.mappers;
 
 import com.erp.car.report.entities.User;
+import com.erp.car.report.entities.UserCar;
 import com.erp.car.report.entities.UserExample;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -21,6 +22,7 @@ public interface UserMapper {
     List<User> selectByExample(UserExample example);
 
     User selectByPrimaryKey(Long id);
+    UserCar selectCarByPrimaryKey(Long id);
 
     int updateByExampleSelective(@Param("record") User record, @Param("example") UserExample example);
 

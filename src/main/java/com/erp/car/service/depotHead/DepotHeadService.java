@@ -2076,4 +2076,20 @@ public class DepotHeadService {
 
 //        String a = "【】";
     }
+
+    @Transactional(value = "transactionManager", rollbackFor = Exception.class)
+    public int updateOrderStatusByObj(String userid,CarOrderStatus carOrderStatus) throws Exception{
+        logService.insertLog("用户",
+                new StringBuffer(BusinessConstants.LOG_OPERATION_TYPE_EDIT).append(user.getId()).toString(),
+                ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest());
+        int result=0;
+        try{
+            depotHeadMapper
+            result=userMapper.updateByPrimaryKeySelective(user);
+        }catch(Exception e){
+            JshException.writeFail(logger, e);
+        }
+        return result;
+    }
+
 }

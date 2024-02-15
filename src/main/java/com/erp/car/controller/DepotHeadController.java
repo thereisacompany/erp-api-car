@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.erp.car.constants.BusinessConstants;
 import com.erp.car.constants.ExceptionConstants;
+import com.erp.car.report.entities.CarOrderStatus;
 import com.erp.car.report.entities.DepotHead;
 import com.erp.car.report.entities.DepotHeadVo4Body;
 import com.erp.car.report.vo.*;
@@ -47,6 +48,9 @@ public class DepotHeadController {
 
     @Resource
     private RedisService redisService;
+
+    private static String SUCCESS = "操作成功";
+    private static String ERROR = "操作失败";
 
     /**
      * 批量设置状态-审核或者反审核
@@ -649,6 +653,28 @@ public class DepotHeadController {
             e.printStackTrace();
         }
         return res;
+    }
+
+    @PostMapping(value = "/updateStatus")
+    @ApiOperation(value = "更新訂單狀態")
+    public String updatePwd(@RequestBody CarOrderStatus carOrderStatus, HttpServletRequest request)throws Exception {
+        Map<String, Object> objectMap = new HashMap<String, Object>();
+        try{
+            String info = "";
+            Map<String, Object> data = new HashMap<>();
+            Long userId = Long.parseLong(redisService.getObjectFromSessionByKey(request,"CaruserId").toString());
+//            Long userId = jsonObject.getLong("userId");
+//            String status = jsonObject.getString("status");
+
+            depotHeadService.updateOrderStatusByObj(userId,carOrderStatus);
+
+        } catch (Exception e) {
+//            logger.error(">>>>>>>>>>>>>修改用户ID为 ： " + jsonObject.getLong("userId") + "密码信息失败", e);
+//            flag = 3;
+//            objectMap.put("status", flag);
+            return returnJson(objectMap, ERROR, ErpInfo.ERROR.code);
+        }
+        return "";
     }
 
 
