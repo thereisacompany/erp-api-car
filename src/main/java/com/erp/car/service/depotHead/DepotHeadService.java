@@ -2078,14 +2078,14 @@ public class DepotHeadService {
     }
 
     @Transactional(value = "transactionManager", rollbackFor = Exception.class)
-    public int updateOrderStatusByObj(String userid,CarOrderStatus carOrderStatus) throws Exception{
-        logService.insertLog("用户",
-                new StringBuffer(BusinessConstants.LOG_OPERATION_TYPE_EDIT).append(user.getId()).toString(),
+    public int updateOrderStatusByObj(Long userid,CarOrderStatus carOrderStatus) throws Exception{
+        logService.insertLog("司機訂單狀態",
+                new StringBuffer(BusinessConstants.LOG_OPERATION_TYPE_EDIT).append(userid).toString(),
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest());
         int result=0;
         try{
-            depotHeadMapper
-            result=userMapper.updateByPrimaryKeySelective(user);
+            result= depotHeadMapper.updateByCarOrderStatus(userid,carOrderStatus);
+//            result=userMapper.updateByPrimaryKeySelective(user);
         }catch(Exception e){
             JshException.writeFail(logger, e);
         }

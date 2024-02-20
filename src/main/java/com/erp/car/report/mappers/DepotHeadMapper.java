@@ -1,5 +1,6 @@
 package com.erp.car.report.mappers;
 
+import com.erp.car.report.entities.CarOrderStatus;
 import com.erp.car.report.entities.DepotHead;
 import com.erp.car.report.entities.DepotHeadExample;
 import com.erp.car.report.vo.DeliveryStatus;
@@ -31,6 +32,8 @@ public interface DepotHeadMapper {
     int updateByPrimaryKeySelective(DepotHead record);
 
     int updateByPrimaryKey(DepotHead record);
+
+    int updateByCarOrderStatus(@Param("userid") Long userid, CarOrderStatus carOrderStatus);
 
     DepotHeadDetail selectHeaderDetailByHeaderId(@Param("headerId") Long headerId,
                                                  @Param("itemId") Long itemId);

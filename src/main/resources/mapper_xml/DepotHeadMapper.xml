@@ -882,7 +882,8 @@
   </select>
 
 
-  <update id="update" parameterType="com.erp.car.report.entities.CarOrderStatus">
-
+  <update id="updateByCarOrderStatus" parameterType="com.erp.car.report.entities.CarOrderStatus">
+    update jsh_depot_head
+    set type =
   </update>
 </mapper>
