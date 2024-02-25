@@ -15,6 +15,7 @@ import com.erp.car.service.unit.UnitService;
 import com.erp.car.utils.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.tomcat.util.bcel.Const;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -57,22 +58,29 @@ public class FrontEndController {
     HttpServletRequest request)throws Exception {
         BaseResponseInfo res = new BaseResponseInfo();
         try {
-        Map<String, String> parameterMap = ParamUtils.requestToMap(request);
-        parameterMap.put(Constants.SEARCH, search);
-        Map<String, Object> objectMap = new HashMap<String, Object>();
-        if (pageSize != null && pageSize <= 0) {
-            pageSize = 10;
-        }
-        String offset = ParamUtils.getPageOffset(currentPage, pageSize);
-        if (StringUtil.isNotEmpty(offset)) {
-            parameterMap.put(Constants.OFFSET, offset);
-        }
+            Map<String, String> parameterMap = ParamUtils.requestToMap(request);
+            parameterMap.put(Constants.SEARCH, search);
+            Map<String, Object> objectMap = new HashMap<String, Object>();
+            if (pageSize != null && pageSize <= 0) {
+                pageSize = 10;
+            }
+            String offset = ParamUtils.getPageOffset(currentPage, pageSize);
+            if (StringUtil.isNotEmpty(offset)) {
+                parameterMap.put(Constants.OFFSET, offset);
+            }
 
-
-
-        List<?> list = depotHeadComponent.select(parameterMap);
+            List<?> list = depotHeadComponent.select(parameterMap);
             res.code = 200;
-            res.data = list;
+            if (list != null) {
+                objectMap.put("total", depotHeadComponent.counts(parameterMap));
+                objectMap.put("rows", list);
+//                res.data = list;
+                res.data = objectMap;
+            } else {
+                objectMap.put("total", BusinessConstants.DEFAULT_LIST_NULL_NUMBER);
+                objectMap.put("rows", new ArrayList<Object>());
+                res.data = objectMap;
+            }
         } catch(Exception e){
             e.printStackTrace();
             res.code = 500;

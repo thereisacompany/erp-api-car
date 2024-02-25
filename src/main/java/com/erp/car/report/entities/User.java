@@ -16,6 +16,8 @@ public class User {
 
     private Long supplier_id;
 
+    private String licensePlateNumber;
+
     public Long getId() {
         return id;
     }

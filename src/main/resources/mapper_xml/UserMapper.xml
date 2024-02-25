@@ -80,8 +80,9 @@
     <if test="distinct">
       distinct
     </if>
-    id, username, login_name, password, Status,supplier_id
-    from jsh_caruser
+    jc.id, username, login_name, password, jc.Status,jc.supplier_id,license_plate_number
+    from jsh_caruser jc
+    left join erp.jsh_vehicle jv on jc.supplier_id = jv.driver
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>

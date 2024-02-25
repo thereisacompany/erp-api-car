@@ -186,7 +186,8 @@
 
     <select id="selectCarByConditionDepotHead" parameterType="com.erp.car.report.entities.DepotHeadExample" resultMap="ResultMapEx">
         select distinct dh.*, s.supplier OrganName, u.username userName, a.name AccountName,
-        me.`number` MNumber, jd.name depotName, di.id SubId, di.counter_name counterName
+        me.`number` MNumber, jd.name depotName, di.id SubId, di.counter_name counterName,
+        IFNULL(jdd.status,0) DStatus
         from jsh_depot_head dh
         left join jsh_depot_item di on dh.id = di.header_id and ifnull(di.delete_flag,'0') !='1'
         left join jsh_supplier s on dh.organ_id=s.id and ifnull(s.delete_Flag,'0') !='1'
@@ -195,6 +196,7 @@
         left join jsh_material m on di.material_id = m.id and ifnull(m.delete_flag,'0') !='1'
         left join jsh_material_extend me on di.material_extend_id = me.id and ifnull(me.delete_flag,'0') !='1'
         left join jsh_depot jd on di.depot_id = jd.id
+        left join jsh_depot_detail jdd on dh.id = jdd.header_id
         where 1=1
         <if test="type != null">
             and dh.type=#{type}
@@ -204,7 +206,7 @@
         </if>
 
         and dh.status in (0,1)
-
+        and jdd.driver_id = #{driverId}
 
         <if test="number != null">
             <bind name="bindNumber" value="'%'+number+'%'"/>
@@ -272,6 +274,7 @@
         left join jsh_supplier s on dh.organ_id=s.id and ifnull(s.delete_Flag,'0') !='1'
         left join jsh_material m on di.material_id = m.Id and ifnull(m.delete_Flag,'0') !='1'
         left join jsh_material_extend me on di.material_extend_id = me.id and ifnull(me.delete_flag,'0') !='1'
+        left join jsh_depot_detail jdd on dh.id = jdd.header_id
         WHERE 1=1
         <if test="type != null">
             and dh.type=#{type}
@@ -279,6 +282,9 @@
         <if test="subType != null">
             and dh.sub_type=#{subType}
         </if>
+
+        and jdd.driver_id = #{driverId}
+
         <if test="statusArray != null and statusArray !=''">
             and dh.status in (
             <foreach collection="statusArray" item="status" separator=",">

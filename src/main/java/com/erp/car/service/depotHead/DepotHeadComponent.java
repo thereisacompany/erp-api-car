@@ -27,7 +27,7 @@ public class DepotHeadComponent implements ICommonQuery {
 
     @Override
     public List<?> select(Map<String, String> map)throws Exception {
-        return getDepotHeadList(map);
+        return getDepotHeadCarList(map);
     }
 
     private List<?> getDepotHeadList(Map<String, String> map)throws Exception {
@@ -57,8 +57,7 @@ public class DepotHeadComponent implements ICommonQuery {
         Long accountId = StringUtil.parseStrLong(StringUtil.getInfo(search, "accountId"));
         String remark = StringUtil.getInfo(search, "remark");
 
-
-        return depotHeadService.selectCar(type, subType, roleType, hasDebt, status, purchaseStatus, number, linkNumber,
+        return depotHeadService.selectCar(null, type, subType, roleType, hasDebt, status, purchaseStatus, number, linkNumber,
                 beginTime, endTime, materialParam, keyword, organId, MNumber, creator, depotId, counterId, accountId, remark, QueryUtils.offset(map), QueryUtils.rows(map));
     }
 
@@ -89,9 +88,9 @@ public class DepotHeadComponent implements ICommonQuery {
         Long counterId = StringUtil.parseStrLong(StringUtil.getInfo(search, "counterId"));
         Long accountId = StringUtil.parseStrLong(StringUtil.getInfo(search, "accountId"));
         String remark = StringUtil.getInfo(search, "remark");
+        Long driverId = StringUtil.parseStrLong(StringUtil.getInfo(search, "driverId"));
 
-
-        return depotHeadService.selectCar(type, subType, roleType, hasDebt, status, purchaseStatus, number, linkNumber,
+        return depotHeadService.selectCar(driverId, type, subType, roleType, hasDebt, status, purchaseStatus, number, linkNumber,
                 beginTime, endTime, materialParam, keyword, organId, MNumber, creator, depotId, counterId, accountId, remark, QueryUtils.offset(map), QueryUtils.rows(map));
     }
 
@@ -120,7 +119,9 @@ public class DepotHeadComponent implements ICommonQuery {
         Long depotId = StringUtil.parseStrLong(StringUtil.getInfo(search, "depotId"));
         Long accountId = StringUtil.parseStrLong(StringUtil.getInfo(search, "accountId"));
         String remark = StringUtil.getInfo(search, "remark");
-        return depotHeadService.countDepotHead(type, subType, roleType, hasDebt, status, purchaseStatus, number, linkNumber,
+        Long driverId = StringUtil.parseStrLong(StringUtil.getInfo(search, "driverId"));
+
+        return depotHeadService.countDepotHead(driverId, type, subType, roleType, hasDebt, status, purchaseStatus, number, linkNumber,
                 beginTime, endTime, materialParam, keyword, organId, creator, depotId, accountId, remark);
     }
 

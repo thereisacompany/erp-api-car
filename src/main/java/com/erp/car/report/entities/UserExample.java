@@ -789,6 +789,11 @@ public class UserExample {
             return (Criteria) this;
         }
 
+        public Criteria andPlusStatusEqualTo(Byte value) {
+            addCriterion("jc.Status=", value, "status");
+            return (Criteria) this;
+        }
+
         public Criteria andStatusNotEqualTo(Byte value) {
             addCriterion("Status <>", value, "status");
             return (Criteria) this;

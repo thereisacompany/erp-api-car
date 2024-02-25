@@ -316,7 +316,7 @@ public class UserService {
         try {
             UserExample example = new UserExample();
             example.createCriteria().andLoginNameEqualTo(loginName).andPasswordEqualTo(password)
-                    .andStatusEqualTo(BusinessConstants.USER_STATUS_NORMAL);
+                    .andPlusStatusEqualTo(BusinessConstants.USER_STATUS_NORMAL);
             list = userMapper.selectByExample(example);
             if (null != list && list.size() == 0) {
                 return ExceptionCodeConstants.UserExceptionCode.USER_PASSWORD_ERROR;
@@ -330,7 +330,7 @@ public class UserService {
 
     public User getUserByLoginName(String loginName)throws Exception {
         UserExample example = new UserExample();
-        example.createCriteria().andLoginNameEqualTo(loginName).andStatusEqualTo(BusinessConstants.USER_STATUS_NORMAL);
+        example.createCriteria().andLoginNameEqualTo(loginName).andPlusStatusEqualTo(BusinessConstants.USER_STATUS_NORMAL);
         List<User> list=null;
         try{
             list= userMapper.selectByExample(example);

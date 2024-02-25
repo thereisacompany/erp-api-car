@@ -44,6 +44,7 @@ public interface DepotHeadMapperEx {
 
 
     List<DepotHeadVo4List> selectCarByConditionDepotHead(
+            @Param("driverId") Long driverId,
             @Param("type") String type,
             @Param("subType") String subType,
             @Param("number") String number,
@@ -62,6 +63,7 @@ public interface DepotHeadMapperEx {
             @Param("rows") Integer rows);
 
     Long countsByDepotHead(
+            @Param("driverId") Long driverId,
             @Param("type") String type,
             @Param("subType") String subType,
             @Param("creatorArray") String[] creatorArray,
