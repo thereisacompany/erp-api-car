@@ -36,11 +36,16 @@ public interface DepotHeadMapper {
     DepotHeadDetail selectHeaderDetailByHeaderId(@Param("headerId") Long headerId,
                                                  @Param("itemId") Long itemId);
 
+    DepotHeadDetail selectHeaderDetailByPrimaryKey(@Param("id") Long ig);
+
     List<DeliveryStatus> selectDetailRecord(@Param("detailId") Long detailId);
 
     DepotDetail selectDetailByHeaderId(@Param("headerId") Long headerId);
 
     int updateDetail(@Param("record") DepotDetail record);
     int insertDetailRecord(DepotRecord record);
+
+    int insertDetailReport(@Param("report") DepotReport report);
+
 
 }

@@ -655,8 +655,8 @@ public class DepotHeadController {
         return res;
     }
 
-    @PostMapping(value = "/updateStatus")
-    @ApiOperation(value = "更新訂單狀態")
+//    @PostMapping(value = "/updateStatus")
+//    @ApiOperation(value = "更新訂單狀態")
     public String updatePwd(@RequestBody CarOrderStatus carOrderStatus, HttpServletRequest request)throws Exception {
         Map<String, Object> objectMap = new HashMap<String, Object>();
         try{

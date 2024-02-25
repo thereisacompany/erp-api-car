@@ -223,6 +223,26 @@ public class DepotHeadService {
         }
     }
 
+    @Transactional(value = "transactionManager", rollbackFor = Exception.class)
+    public void driverReport(Long id, String message, HttpServletRequest request) throws Exception{
+
+        DepotHeadDetail detail = depotHeadMapper.selectHeaderDetailByPrimaryKey(id);
+        if(detail == null) {
+            throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_UN_DETAIL_GET_FAILED_CODE,
+                    ExceptionConstants.DEPOT_HEAD_UN_DETAIL_GET_FAILED_MSG);
+        }
+        try {
+            DepotReport report = new DepotReport();
+            report.setDetailId(id);
+            report.setMessage(message);
+            report.setFeedback(null);
+            report.setDatetime(LocalDateTime.now().format(formatterChange));
+            depotHeadMapper.insertDetailReport(report);
+        } catch (Exception e) {
+            JshException.writeFail(logger, e);
+        }
+    }
+
     public List<DepotHeadVo4List> selectCar(String type, String subType, String roleType, String hasDebt, String status,
                                          String purchaseStatus, String number, String linkNumber, String beginTime,
                                          String endTime, String materialParam, String keyword, Long organId, String MNumber, Long creator,

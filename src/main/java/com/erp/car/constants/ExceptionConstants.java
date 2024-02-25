@@ -337,6 +337,8 @@ public class ExceptionConstants {
     public static final String DEPOT_HEAD_HEADER_ID_NOT_EXIST_MSG = "查無此配送單資料";
     public static final int DEPOT_HEAD_UN_OUT_TO_DELIVERY_FAILED_CODE = 8000023;
     public static final String DEPOT_HEAD_UN_OUT_TO_DELIVERY_FAILED_MSG = "抱歉，只有配送單的單據才可以調整訂單狀態";
+    public static final int DEPOT_HEAD_UN_DETAIL_GET_FAILED_CODE = 8000024;
+    public static final String DEPOT_HEAD_UN_DETAIL_GET_FAILED_MSG = "抱歉，查無此訂單配送細節id";
 
     /**
      *  单据信息

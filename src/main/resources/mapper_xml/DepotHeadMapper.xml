@@ -881,6 +881,14 @@
     </if>
   </select>
 
+  <select id="selectHeaderDetailByPrimaryKey" resultMap="DetailResultMap">
+    SELECT jdd.id, jdd.status, js.id supplierId, js.supplier, jdd.assign_date, jdd.assign_user, jv.license_plate_number, jdd.file_path
+    FROM jsh_depot_detail jdd
+    LEFT JOIN jsh_supplier js ON jdd.driver_id = js.id
+    LEFT JOIN jsh_vehicle jv ON jv.supplier_id = js.id
+    WHERE jdd.id = ${id}
+  </select>
+
   <select id="selectDetailByHeaderId" resultMap="DepotDetailResultMap">
     SELECT id,header_id,item_id,status,driver_id,assign_date,assign_user,file_path
     FROM jsh_depot_detail WHERE header_id = ${headerId} and status >= 0;
@@ -900,6 +908,11 @@
     </set>
     where id = #{record.id,jdbcType=BIGINT}
   </update>
+
+  <insert id="insertDetailReport" parameterType="com.jsh.erp.datasource.entities.DepotReport">
+    insert into jsh_depot_report (id, detail_id, datetime, message, feedback)
+    values (#{id,jdbcType=BIGINT}, #{detailId,jdbcType=BIGINT}, #{datetime,jdbcType=TIMESTAMP}, #{message,jdbc=VARCHAR}, #{feedback,jdbc=VARCHAR})
+  </insert>
 
   <update id="updateByCarOrderStatus" parameterType="com.erp.car.report.entities.CarOrderStatus">
     update jsh_depot_head
