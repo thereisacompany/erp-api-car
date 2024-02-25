@@ -333,6 +333,10 @@ public class ExceptionConstants {
     //EXCEL中存在重复的条码
     public static final int MATERIAL_EXCEL_IMPORT_BARCODE_EXIST_CODE = 80000021;
     public static final String MATERIAL_EXCEL_IMPORT_BARCODE_EXIST_MSG = "抱歉，EXCEL中存在重复的条码，具体条码为：%s";
+    public static final int DEPOT_HEAD_HEADER_ID_NOT_EXIST_CODE = 8000022;
+    public static final String DEPOT_HEAD_HEADER_ID_NOT_EXIST_MSG = "查無此配送單資料";
+    public static final int DEPOT_HEAD_UN_OUT_TO_DELIVERY_FAILED_CODE = 8000023;
+    public static final String DEPOT_HEAD_UN_OUT_TO_DELIVERY_FAILED_MSG = "抱歉，只有配送單的單據才可以調整訂單狀態";
 
     /**
      *  单据信息
@@ -507,6 +511,14 @@ public class ExceptionConstants {
     public static final int VEHICLE_HAD_DRIVER_FAILED_CODE = 12000001;
     public static final String VEHICLE_HAD_DRIVER_FAILED_MSG = "此駕駛已有綁定車輛";
 
+    /**
+     * 配送單派發司機
+     * type = 130
+     */
+    public static final int DEPOT_HEAD_ALREADY_ASSIGN_DRIVER_CODE = 13000000;
+    public static final String DEPOT_HEAD_ALREADY_ASSIGN_DRIVER_MSG = "此配送單已派發過司機，請先操作重新指派功能";
+    public static final int DEPOT_HEAD_NOT_ASSIGN_DRIVER_CODE = 13000001;
+    public static final String DEPOT_HEAD_NOT_ASSIGN_DRIVER_MSG = "此配送單未派發過司機，請先進行派發司機功能";
 
     //进销存统计，如果有权限的仓库数量太多则提示要选择仓库
     public static final int REPORT_TWO_MANY_DEPOT_FAILED_CODE = 510;

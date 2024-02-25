@@ -185,7 +185,43 @@ public class DepotHeadService {
         return dhd;
     }
 
+    @Transactional(value = "transactionManager", rollbackFor = Exception.class)
+    public void updateOrderStatus(Long headerId, Integer status, HttpServletRequest request) throws Exception {
+        // 是否有此配送單
+        DepotHead depotHead = depotHeadMapper.selectByPrimaryKey(headerId);
+        if(depotHead == null) {
+            throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_HEADER_ID_NOT_EXIST_CODE,
+                    String.format(ExceptionConstants.DEPOT_HEAD_HEADER_ID_NOT_EXIST_MSG));
+        } else {
+            if(!depotHead.getSubType().equals(BusinessConstants.DEPOTHEAD_SUBTYPE_OUT)) {
+                throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_UN_OUT_TO_DELIVERY_FAILED_CODE,
+                        String.format(ExceptionConstants.DEPOT_HEAD_UN_OUT_TO_DELIVERY_FAILED_MSG));
+            }
+        }
 
+        // 檢查是否已有指派過司機
+        DepotDetail detail = depotHeadMapper.selectDetailByHeaderId(headerId);
+        if(detail == null || detail != null && detail.getDriverId() == 0) {
+            throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_NOT_ASSIGN_DRIVER_CODE,
+                    String.format(ExceptionConstants.DEPOT_HEAD_NOT_ASSIGN_DRIVER_MSG));
+        }
+
+        try{
+            detail.setStatus(String.valueOf(status));
+            depotHeadMapper.updateDetail(detail);
+
+            // insert jsh_depot_record
+            DepotRecord record = new DepotRecord();
+            record.setDetailId(detail.getId());
+            record.setStatus(String.valueOf(status));
+            record.setDate(LocalDateTime.now().format(formatterChange));
+            depotHeadMapper.insertDetailRecord(record);
+
+            logService.insertLog("訂單狀態", BusinessConstants.LOG_OPERATION_TYPE_EDIT, request);
+        } catch (Exception e) {
+            JshException.writeFail(logger, e);
+        }
+    }
 
     public List<DepotHeadVo4List> selectCar(String type, String subType, String roleType, String hasDebt, String status,
                                          String purchaseStatus, String number, String linkNumber, String beginTime,

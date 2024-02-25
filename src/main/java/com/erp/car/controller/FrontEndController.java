@@ -3,6 +3,8 @@ package com.erp.car.controller;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.erp.car.constants.BusinessConstants;
+import com.erp.car.constants.ExceptionConstants;
+import com.erp.car.report.entities.DepotDetailVo4Body;
 import com.erp.car.report.entities.DepotHead;
 import com.erp.car.report.entities.DepotItemVo4WithInfoEx;
 import com.erp.car.report.entities.Unit;
@@ -267,7 +269,13 @@ public class FrontEndController {
         return res;
     }
 
-
+    @PutMapping(value = "/order/status")
+    @ApiOperation(value = "訂單狀態修改")
+    public Object orderStatusUpdate(@RequestBody DepotDetailVo4Body body, HttpServletRequest request) throws Exception {
+        JSONObject result = ExceptionConstants.standardSuccess();
+        depotHeadService.updateOrderStatus(body.getHeaderId(), body.getOrderStatus(), request);
+        return result;
+    }
 
     /**
      * 获取扩展信息
