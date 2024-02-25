@@ -894,12 +894,12 @@
     FROM jsh_depot_detail WHERE header_id = ${headerId} and status >= 0;
   </select>
 
-  <insert id="insertDetailRecord" parameterType="com.jsh.erp.datasource.entities.DepotRecord">
+  <insert id="insertDetailRecord" parameterType="com.erp.car.report.entities.DepotRecord">
     insert into jsh_depot_record (id, detail_id, status, date)
     values (#{id,jdbcType=BIGINT}, #{detailId,jdbcType=BIGINT}, #{status,jdbcType=VARCHAR}, #{date,jdbcType=TIMESTAMP})
   </insert>
 
-  <update id="updateDetail" parameterType="com.jsh.erp.datasource.entities.DepotDetail">
+  <update id="updateDetail" parameterType="com.erp.car.report.entities.DepotDetail">
     update jsh_depot_detail
     <set>
       <if test="record.status != null">
@@ -909,9 +909,9 @@
     where id = #{record.id,jdbcType=BIGINT}
   </update>
 
-  <insert id="insertDetailReport" parameterType="com.jsh.erp.datasource.entities.DepotReport">
+  <insert id="insertDetailReport" parameterType="com.erp.car.report.entities.DepotReport">
     insert into jsh_depot_report (id, detail_id, datetime, message, feedback)
-    values (#{id,jdbcType=BIGINT}, #{detailId,jdbcType=BIGINT}, #{datetime,jdbcType=TIMESTAMP}, #{message,jdbc=VARCHAR}, #{feedback,jdbc=VARCHAR})
+    values (#{id,jdbcType=BIGINT}, #{detailId,jdbcType=BIGINT}, #{datetime,jdbcType=TIMESTAMP}, #{message,jdbcType=VARCHAR}, #{feedback,jdbcType=VARCHAR})
   </insert>
 
   <update id="updateByCarOrderStatus" parameterType="com.erp.car.report.entities.CarOrderStatus">
