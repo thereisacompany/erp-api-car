@@ -233,10 +233,11 @@ public class DepotHeadService {
         }
         try {
             DepotReport report = new DepotReport();
+            report.setId(null);
             report.setDetailId(id);
+            report.setDatetime(LocalDateTime.now().format(formatterChange));
             report.setMessage(message);
             report.setFeedback(null);
-            report.setDatetime(LocalDateTime.now().format(formatterChange));
             depotHeadMapper.insertDetailReport(report);
         } catch (Exception e) {
             JshException.writeFail(logger, e);

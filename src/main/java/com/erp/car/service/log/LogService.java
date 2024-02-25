@@ -33,7 +33,7 @@ public class LogService {
 
     public void insertLog(String moduleName, String content, HttpServletRequest request)throws Exception{
         try{
-            DataSourceContextHolder.setDBType("live");
+//            DataSourceContextHolder.setDBType("live");
             Long userId = userService.getUserId(request);
             if(userId!=null) {
                 String clientIp = getLocalIp(request);

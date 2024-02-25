@@ -46,6 +46,16 @@
     <result column="tenant_id" jdbcType="BIGINT" property="tenantId" />
     <result column="delete_flag" jdbcType="VARCHAR" property="deleteFlag" />
   </resultMap>
+  <resultMap id="DepotDetailResultMap" type="com.erp.car.report.entities.DepotDetail">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="header_id" jdbcType="BIGINT" property="headerId" />
+    <result column="item_id" jdbcType="BIGINT" property="itemId" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="driver_id" jdbcType="INTEGER" property="driverId" />
+    <result column="assign_date" jdbcType="TIMESTAMP" property="assignDate" />
+    <result column="assign_user" jdbcType="VARCHAR" property="assignUser" />
+    <result column="file_path" jdbcType="VARCHAR" property="filePath" />
+  </resultMap>
   <resultMap id="StatusResultMap" type="com.erp.car.report.vo.DeliveryStatus">
     <result column="status" jdbcType="VARCHAR" property="status" />
     <result column="date" jdbcType="VARCHAR" property="date" />

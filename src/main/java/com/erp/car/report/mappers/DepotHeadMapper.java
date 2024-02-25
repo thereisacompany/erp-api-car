@@ -45,7 +45,7 @@ public interface DepotHeadMapper {
     int updateDetail(@Param("record") DepotDetail record);
     int insertDetailRecord(DepotRecord record);
 
-    int insertDetailReport(@Param("report") DepotReport report);
+    int insertDetailReport(DepotReport report);
 
 
 }
