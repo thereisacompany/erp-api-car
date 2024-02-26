@@ -72,7 +72,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, username, login_name, password, position, department, email, phonenum, ismanager, 
+    id, username, login_name, password, position, department, email, phonenum, ismanager,
     isystem, Status, auth_list, description, remark, tenant_id
   </sql>
   <select id="selectByExample" parameterType="com.erp.car.report.entities.UserExample" resultMap="BaseResultMap">
@@ -93,9 +93,7 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
-    from jsh_caruser jcu
-    inner join jsh_supplier jsu on jcu.
-
+    from jsh_user
     where id = #{id,jdbcType=BIGINT}
   </select>
 
