@@ -290,6 +290,31 @@ public class FrontEndController {
         return result;
     }
 
+    @PutMapping(value = "/delivery/file/update")
+    @ApiOperation(value = "修改內容(保存上傳的附件)")
+    public Object deliveryFileUpdate(@RequestBody DepotDetailVo4File file, HttpServletRequest request) throws Exception {
+        JSONObject result = ExceptionConstants.standardSuccess();
+        depotHeadService.uploadDetailFilePath(file.getHeaderId(), file.getFilePath(), request);
+        return result;
+    }
+
+    @GetMapping(value = "/getDeliveryReport")
+    @ApiOperation(value = "取得司機回報列表")
+    public BaseResponseInfo getDeliveryReport(@RequestParam("headerId") Long headerId, HttpServletRequest request) {
+        BaseResponseInfo res = new BaseResponseInfo();
+
+        try {
+            res.code = 200;
+            res.data = depotHeadService.getDeliveryReport(headerId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            res.code = 500;
+            res.data = "獲取資料失敗";
+        }
+
+        return res;
+    }
+
     /**
      * 获取扩展信息
      *

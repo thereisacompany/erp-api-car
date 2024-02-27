@@ -42,6 +42,8 @@ public interface DepotHeadMapper {
 
     DepotDetail selectDetailByHeaderId(@Param("headerId") Long headerId);
 
+    List<DepotReport> selectDetailReport(@Param("detailId") Long detailId);
+
     int updateDetail(@Param("record") DepotDetail record);
     int insertDetailRecord(DepotRecord record);
 

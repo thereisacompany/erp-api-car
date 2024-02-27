@@ -5,7 +5,8 @@ import lombok.Data;
 
 @Data
 public class DepotReportVo4Body {
-    @ApiModelProperty(required = true)
+
+    @ApiModelProperty(value = "配送單id", required = true)
     private Long detailId;
     @ApiModelProperty(required = true)
     private String message;

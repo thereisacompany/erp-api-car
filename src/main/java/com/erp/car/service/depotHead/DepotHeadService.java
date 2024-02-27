@@ -234,7 +234,7 @@ public class DepotHeadService {
         try {
             DepotReport report = new DepotReport();
             report.setId(null);
-            report.setDetailId(id);
+            report.setDetailId(detail.getId());
             report.setDatetime(LocalDateTime.now().format(formatterChange));
             report.setMessage(message);
             report.setFeedback(null);
@@ -242,6 +242,48 @@ public class DepotHeadService {
         } catch (Exception e) {
             JshException.writeFail(logger, e);
         }
+    }
+
+    @Transactional(value = "transactionManager", rollbackFor = Exception.class)
+    public void uploadDetailFilePath(Long headerId, String path, HttpServletRequest request) throws Exception{
+        // 是否有此配送單
+        DepotHead depotHead = depotHeadMapper.selectByPrimaryKey(headerId);
+        if(depotHead == null) {
+            throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_HEADER_ID_NOT_EXIST_CODE,
+                    String.format(ExceptionConstants.DEPOT_HEAD_HEADER_ID_NOT_EXIST_MSG));
+        }
+        // 檢查是否已有指派過司機
+        DepotDetail detail = depotHeadMapper.selectDetailByHeaderId(headerId);
+        if(detail == null) {
+            throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_UN_DETAIL_GET_FAILED_CODE,
+                    String.format(ExceptionConstants.DEPOT_HEAD_UN_DETAIL_GET_FAILED_MSG));
+        }
+        try {
+            detail.setFilePath(path);
+            depotHeadMapper.updateDetail(detail);
+        } catch (Exception e) {
+            JshException.writeFail(logger, e);
+        }
+    }
+
+    /**
+     * 取得司機回報列表
+     * @param headerId
+     * @return
+     */
+    public List<DepotReport> getDeliveryReport(Long headerId) {
+        List<DepotReport> list = new ArrayList<>();
+        // 是否有此配送單
+        DepotHead depotHead = depotHeadMapper.selectByPrimaryKey(headerId);
+        if(depotHead == null) {
+            throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_HEADER_ID_NOT_EXIST_CODE,
+                    String.format(ExceptionConstants.DEPOT_HEAD_HEADER_ID_NOT_EXIST_MSG));
+        }
+        DepotHeadDetail detail = depotHeadMapper.selectHeaderDetailByHeaderId(headerId, null);
+        if (detail != null) {
+            list = depotHeadMapper.selectDetailReport(detail.getId());
+        }
+        return list;
     }
 
     public List<DepotHeadVo4List> selectCar(Long driverId, String type, String subType, String roleType, String hasDebt, String status,
