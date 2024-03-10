@@ -512,7 +512,8 @@ public class ExceptionConstants {
     public static final String VEHICLE_NO_EXIST_MSG = "查無此車輛資料";
     public static final int VEHICLE_HAD_DRIVER_FAILED_CODE = 12000001;
     public static final String VEHICLE_HAD_DRIVER_FAILED_MSG = "此駕駛已有綁定車輛";
-
+    public static final int VEHICLE_NO_BIND_DRIVER_CODE = 12000003;
+    public static final String VEHICLE_NO_BIND_DRIVER_MSG = "此司機未綁定車輛";
     /**
      * 配送單派發司機
      * type = 130

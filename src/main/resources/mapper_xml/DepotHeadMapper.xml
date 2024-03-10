@@ -162,6 +162,12 @@
     from jsh_depot_head
     where id = #{id,jdbcType=BIGINT}
   </select>
+  <select id="selectByNumber" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from jsh_depot_head
+    where number = #{number,jdbcType=VARCHAR}
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from jsh_depot_head
     where id = #{id,jdbcType=BIGINT}
@@ -909,7 +915,11 @@
     FROM jsh_depot_report
     WHERE detail_id = ${detailId} ORDER BY datetime DESC
   </select>
-
+  <insert id="insertDetail" parameterType="com.jsh.erp.datasource.entities.DepotDetail">
+    insert into jsh_depot_detail (id, header_id, item_id, status, driver_id, assign_date, assign_user, file_path)
+    values (#{id,jdbcType=BIGINT}, #{headerId,jdbcType=BIGINT}, #{itemId,jdbcType=BIGINT}, #{status,jdbcType=VARCHAR},
+    #{driverId,jdbcType=INTEGER}, #{assignDate,jdbcType=TIMESTAMP}, #{assignUser,jdbcType=VARCHAR}, #{filePath,jdbcType=VARCHAR})
+  </insert>
   <insert id="insertDetailRecord" parameterType="com.erp.car.report.entities.DepotRecord">
     insert into jsh_depot_record (id, detail_id, status, date)
     values (#{id,jdbcType=BIGINT}, #{detailId,jdbcType=BIGINT}, #{status,jdbcType=VARCHAR}, #{date,jdbcType=TIMESTAMP})
@@ -937,4 +947,8 @@
     update jsh_depot_head
     set type =
   </update>
+
+  <select id="isDriverBind" resultType="java.lang.Integer">
+    select count(1) from jsh_vehicle where driver = ${supplierId}
+  </select>
 </mapper>

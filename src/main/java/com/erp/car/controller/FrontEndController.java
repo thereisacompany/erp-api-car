@@ -15,6 +15,7 @@ import com.erp.car.service.unit.UnitService;
 import com.erp.car.utils.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.apache.tomcat.util.bcel.Const;
 import org.springframework.web.bind.annotation.*;
 
@@ -313,6 +314,18 @@ public class FrontEndController {
         }
 
         return res;
+    }
+
+    @PutMapping(value = "/delivery/assign")
+    @ApiOperation(value = "司機掃描QRCode, 自動派發")
+    public Object deliveryAssign(@ApiParam(value = "配送單號", required = true)
+                                     @RequestParam(value = "number") String number,
+                                 @ApiParam(value = "司機id", required = true)
+                                 @RequestParam(value = "driverId") Integer driverId,
+                                 HttpServletRequest request) throws Exception {
+        JSONObject result = ExceptionConstants.standardSuccess();
+        depotHeadService.assignDelivery(number, driverId, request);
+        return result;
     }
 
     /**

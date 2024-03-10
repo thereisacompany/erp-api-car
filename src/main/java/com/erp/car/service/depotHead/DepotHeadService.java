@@ -2191,4 +2191,78 @@ public class DepotHeadService {
         return result;
     }
 
+    /**
+     * 派發司機
+     * @param number
+     * @param request
+     * @throws Exception
+     */
+    @Transactional(value = "transactionManager", rollbackFor = Exception.class)
+    public void assignDelivery(String number, Integer driverId, HttpServletRequest request) throws Exception {
+        // 是否有此配送單
+        DepotHead depotHead = depotHeadMapper.selectByNumber(number);
+        if(depotHead == null) {
+            throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_HEADER_ID_NOT_EXIST_CODE,
+                    String.format(ExceptionConstants.DEPOT_HEAD_HEADER_ID_NOT_EXIST_MSG));
+        } else {
+            if(!depotHead.getSubType().equals(BusinessConstants.DEPOTHEAD_SUBTYPE_OUT)) {
+                throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_UN_OUT_TO_DELIVERY_FAILED_CODE,
+                        String.format(ExceptionConstants.DEPOT_HEAD_UN_OUT_TO_DELIVERY_FAILED_MSG));
+            }
+        }
+
+        Long headerId = depotHead.getId();
+
+        // 檢查是否已有指派過司機
+        DepotDetail detail = depotHeadMapper.selectDetailByHeaderId(headerId);
+        if(detail != null && detail.getDriverId() > 0) {
+            throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_ALREADY_ASSIGN_DRIVER_CODE,
+                    String.format(ExceptionConstants.DEPOT_HEAD_ALREADY_ASSIGN_DRIVER_MSG));
+        }
+
+        // 檢查此司機是否已有綁定車輛
+        if(depotHeadMapper.isDriverBind(driverId) == 0) {
+            throw new BusinessRunTimeException(ExceptionConstants.VEHICLE_NO_BIND_DRIVER_CODE,
+                    String.format(ExceptionConstants.VEHICLE_NO_BIND_DRIVER_MSG));
+        }
+
+        try {
+            if (detail != null) {
+                detail.setStatus("1");
+                detail.setDriverId(driverId);
+                detail.setAssignDate(LocalDate.now().format(formatter));
+                depotHeadMapper.updateDetail(detail);
+
+                // insert jsh_depot_record
+                DepotRecord record = new DepotRecord();
+                record.setDetailId(detail.getId());
+                record.setStatus("1");
+                record.setDate(LocalDateTime.now().format(formatterChange));
+                depotHeadMapper.insertDetailRecord(record);
+
+                logService.insertLog("司機派發", BusinessConstants.LOG_OPERATION_TYPE_EDIT, request);
+            } else {
+                // insert jsh_depot_detail
+                detail = new DepotDetail();
+                detail.setHeaderId(headerId);
+                detail.setStatus("1");
+                detail.setDriverId(driverId);
+                detail.setAssignDate(LocalDateTime.now().format(formatterChange));
+                depotHeadMapper.insertDetail(detail);
+
+                // insert jsh_depot_record
+                detail = depotHeadMapper.selectDetailByHeaderId(headerId);
+                DepotRecord record = new DepotRecord();
+                record.setDetailId(detail.getId());
+                record.setStatus("1");
+                record.setDate(LocalDateTime.now().format(formatterChange));
+                depotHeadMapper.insertDetailRecord(record);
+
+                logService.insertLog("司機掃QRCode派發", BusinessConstants.LOG_OPERATION_TYPE_ADD, request);
+            }
+        } catch (Exception e) {
+            JshException.writeFail(logger, e);
+        }
+    }
+
 }

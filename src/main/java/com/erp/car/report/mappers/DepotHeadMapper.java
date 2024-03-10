@@ -23,6 +23,8 @@ public interface DepotHeadMapper {
 
     DepotHead selectByPrimaryKey(Long id);
 
+    DepotHead selectByNumber(String number);
+
     int updateByExampleSelective(@Param("record") DepotHead record, @Param("example") DepotHeadExample example);
 
     int updateByExample(@Param("record") DepotHead record, @Param("example") DepotHeadExample example);
@@ -45,9 +47,12 @@ public interface DepotHeadMapper {
     List<DepotReport> selectDetailReport(@Param("detailId") Long detailId);
 
     int updateDetail(@Param("record") DepotDetail record);
+    int insertDetail(DepotDetail record);
+
     int insertDetailRecord(DepotRecord record);
 
     int insertDetailReport(DepotReport report);
 
+    int isDriverBind(@Param("supplierId") Integer supplierId);
 
 }
