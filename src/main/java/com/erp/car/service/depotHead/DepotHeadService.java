@@ -30,12 +30,10 @@ import com.erp.car.service.supplier.SupplierService;
 import com.erp.car.service.systemConfig.SystemConfigService;
 import com.erp.car.service.user.UserService;
 import com.erp.car.service.userBusiness.UserBusinessService;
-import com.erp.car.utils.BaseResponseInfo;
-import com.erp.car.utils.ExcelUtils;
-import com.erp.car.utils.StringUtil;
-import com.erp.car.utils.Tools;
+import com.erp.car.utils.*;
 import jxl.Sheet;
 import jxl.Workbook;
+import org.checkerframework.checker.units.qual.A;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -295,6 +293,8 @@ public class DepotHeadService {
         try{
         List<DepotHeadVo4List> list = depotHeadMapperEx.selectCarByConditionDepotHead(driverId, type, subType, number, linkNumber, beginTime, endTime,
               keyword, organId, MNumber, creator, depotId, counterId, accountId, remark, offset, rows);
+
+            System.out.println("selectCar  list size >>>"+list.size());
             if(list !=null) {
                 for (DepotHeadVo4List dh : list) {
                     String mKey = dh.getId() + "" + dh.getSubId() + "" + dh.getMNumber();
@@ -332,32 +332,6 @@ public class DepotHeadService {
                     BigDecimal otherMoney = dh.getOtherMoney() != null ? dh.getOtherMoney() : BigDecimal.ZERO;
                     BigDecimal changeAmount = dh.getChangeAmount() != null ? dh.getChangeAmount() : BigDecimal.ZERO;
                     dh.setDebt(discountLastMoney.add(otherMoney).subtract((dh.getDeposit().add(changeAmount))));
-                    //是否有付款单或收款单
-//                    if(financialBillNoMap!=null) {
-//                        Integer financialBillNoSize = financialBillNoMap.get(dh.getId());
-//                        dh.setHasFinancialFlag(financialBillNoSize!=null && financialBillNoSize>0);
-//                    }
-//                    //是否有退款单
-//                    if(billSizeMap!=null) {
-//                        Integer billListSize = billSizeMap.get(dh.getNumber());
-//                        dh.setHasBackFlag(billListSize!=null && billListSize>0);
-//                    }
-//                    if(StringUtil.isNotEmpty(dh.getSalesMan())) {
-//                        dh.setSalesManStr(personService.getPersonByMapAndIds(personMap,dh.getSalesMan()));
-//                    }
-//                    if(dh.getOperTime() != null) {
-//                        dh.setOperTimeStr(getCenternTime(dh.getOperTime()));
-//                    }
-//                    //商品信息简述
-//                    if(materialsListMap!=null) {
-//                        MaterialsListVo vo = materialsListMap.get(mKey);
-//                        dh.setMaterialsList(vo.getMaterialsList());
-//                        dh.setMaterialCount(vo.getMaterialCount());
-//                    }
-                    //商品总数量
-//                    if(materialCountListMap!=null) {
-//                        dh.setMaterialCount(materialCountListMap.get(dh.getId()));
-//                    }
                     //以销定购的情况（不能显示销售单据的金额和客户名称）
                     if (StringUtil.isNotEmpty(purchaseStatus)) {
                         dh.setOrganName("****");
@@ -390,15 +364,8 @@ public class DepotHeadService {
         }catch(Exception e){
             JshException.readFail(logger, e);
         }
-            return resList;
-
+        return resList;
     }
-
-
-
-
-
-
 
     public List<DepotHeadVo4List> select(String type, String subType, String roleType, String hasDebt, String status,
                                          String purchaseStatus, String number, String linkNumber, String beginTime,
@@ -537,9 +504,72 @@ public class DepotHeadService {
         return resList;
     }
 
-    public Long countDepotHead(Long driverId, String type, String subType, String roleType, String hasDebt, String status, String purchaseStatus, String number, String linkNumber,
+    public JSONObject counts(Map<String, String> map)throws Exception {
+        String search = map.get(Constants.SEARCH);
+        String type = StringUtil.getInfo(search, "type");
+        String subType = StringUtil.getInfo(search, "subType");
+        if(type.equals(BusinessConstants.DEPOTHEAD_TYPE_OUT)) {
+            if(subType==null || (subType != null && subType.isEmpty())) {
+                subType = BusinessConstants.DEPOTHEAD_SUBTYPE_OUT;
+            }
+        }
+        String roleType = StringUtil.getInfo(search, "roleType");
+        String hasDebt = StringUtil.getInfo(search, "hasDebt");
+        String status = StringUtil.getInfo(search, "status");
+        String purchaseStatus = StringUtil.getInfo(search, "purchaseStatus");
+        String number = StringUtil.getInfo(search, "number");
+        String linkNumber = StringUtil.getInfo(search, "linkNumber");
+        String beginTime = StringUtil.getInfo(search, "beginTime");
+        String endTime = StringUtil.getInfo(search, "endTime");
+        String materialParam = StringUtil.getInfo(search, "materialParam");
+        String keyword = StringUtil.getInfo(search, "keyword");
+        Long organId = StringUtil.parseStrLong(StringUtil.getInfo(search, "organId"));
+        Long creator = StringUtil.parseStrLong(StringUtil.getInfo(search, "creator"));
+        Long depotId = StringUtil.parseStrLong(StringUtil.getInfo(search, "depotId"));
+        Long accountId = StringUtil.parseStrLong(StringUtil.getInfo(search, "accountId"));
+        String remark = StringUtil.getInfo(search, "remark");
+        Long driverId = StringUtil.parseStrLong(StringUtil.getInfo(search, "driverId"));
+
+        // 狀態(0:未派發 1:已派發 2:已接單 3:聯絡中 4:配送中 5:配送完成 6:異常)
+        // 5
+        // 1、2、3、4
+        // 6
+        AtomicInteger all = new AtomicInteger(0);
+        AtomicInteger done = new AtomicInteger(0);
+        AtomicInteger doing = new AtomicInteger(0);
+        AtomicInteger abnormal = new AtomicInteger(0);
+        JSONObject json = new JSONObject();
+
+        List<DepotHeadStatusVo4List> list = countDepotHead(driverId, type, subType, roleType, hasDebt, status, purchaseStatus, number, linkNumber,
+                beginTime, endTime, materialParam, keyword, organId, creator, depotId, accountId, remark);
+        list.stream().forEach(deliveryStatus->{
+            int count = deliveryStatus.getStatusCount();
+            all.addAndGet(count);
+            switch (deliveryStatus.getDepotStatus()) {
+                case 1:
+                case 2:
+                case 3:
+                case 4:
+                    doing.addAndGet(count);
+                    break;
+                case 5:
+                    done.addAndGet(count);
+                    break;
+                case 6:
+                    abnormal.addAndGet(count);
+                    break;
+            }
+        });
+        json.put("all", all.get());
+        json.put("done", done.get());
+        json.put("doing", doing.get());
+        json.put("abnormal", abnormal.get());
+        return json;
+    }
+
+    private List<DepotHeadStatusVo4List> countDepotHead(Long driverId, String type, String subType, String roleType, String hasDebt, String status, String purchaseStatus, String number, String linkNumber,
            String beginTime, String endTime, String materialParam, String keyword, Long organId, Long creator, Long depotId, Long accountId, String remark) throws Exception{
-        Long result=null;
+        List<DepotHeadStatusVo4List> result=null;
         try{
             String [] depotArray = null;//getDepotArray(subType);
             String [] creatorArray = null;//getCreatorArray(roleType);

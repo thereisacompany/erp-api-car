@@ -62,7 +62,7 @@ public interface DepotHeadMapperEx {
             @Param("offset") Integer offset,
             @Param("rows") Integer rows);
 
-    Long countsByDepotHead(
+    List<DepotHeadStatusVo4List> countsByDepotHead(
             @Param("driverId") Long driverId,
             @Param("type") String type,
             @Param("subType") String subType,

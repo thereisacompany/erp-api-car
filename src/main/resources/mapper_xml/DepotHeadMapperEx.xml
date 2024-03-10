@@ -66,6 +66,11 @@
         <result column="oTime" jdbcType="VARCHAR" property="oTime" />
     </resultMap>
 
+    <resultMap id="ResultDeliveryStatus" type="com.erp.car.report.vo.DepotHeadStatusVo4List">
+        <result column="depot_status" jdbcType="INTEGER" property="depotStatus" />
+        <result column="depot_count" jdbcType="INTEGER" property="depotCount" />
+    </resultMap>
+
     <select id="selectByConditionDepotHead" parameterType="com.erp.car.report.entities.DepotHeadExample" resultMap="ResultMapEx">
         select distinct dh.*, s.supplier OrganName, u.username userName, a.name AccountName,
         me.`number` MNumber, jd.name depotName, di.id SubId, di.counter_name counterName
@@ -208,7 +213,7 @@
         and dh.status in (0,1)
         and jdd.driver_id = #{driverId}
 
-        <if test="number != null">
+        <if test="number != null and number !=''">
             <bind name="bindNumber" value="'%'+number+'%'"/>
             and dh.number like #{bindNumber}
         </if>
@@ -266,10 +271,12 @@
         </if>
     </select>
 
-    <select id="countsByDepotHead" resultType="java.lang.Long">
+    <select id="countsByDepotHead" resultMap="ResultDeliveryStatus">
         SELECT
-        COUNT(1) from
-        (select distinct dh.* FROM jsh_depot_head dh
+            tb.depot_status,
+            COUNT(*) AS status_count
+        from
+        (select distinct dh.*, jdd.status AS depot_status FROM jsh_depot_head dh
         left join jsh_depot_item di on dh.Id = di.header_id and ifnull(di.delete_flag,'0') !='1'
         left join jsh_supplier s on dh.organ_id=s.id and ifnull(s.delete_Flag,'0') !='1'
         left join jsh_material m on di.material_id = m.Id and ifnull(m.delete_Flag,'0') !='1'
@@ -372,6 +379,7 @@
             and (dh.remark like #{bindRemark} or di.remark like #{bindRemark})
         </if>
         and ifnull(dh.delete_Flag,'0') !='1') tb
+        group by tb.depot_status
     </select>
 
     <select id="findMaterialsListMapByHeaderIdList" resultType="com.erp.car.report.vo.MaterialsListVo">

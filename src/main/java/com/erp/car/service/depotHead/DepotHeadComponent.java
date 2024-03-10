@@ -121,8 +121,9 @@ public class DepotHeadComponent implements ICommonQuery {
         String remark = StringUtil.getInfo(search, "remark");
         Long driverId = StringUtil.parseStrLong(StringUtil.getInfo(search, "driverId"));
 
-        return depotHeadService.countDepotHead(driverId, type, subType, roleType, hasDebt, status, purchaseStatus, number, linkNumber,
-                beginTime, endTime, materialParam, keyword, organId, creator, depotId, accountId, remark);
+        return 0L;
+//        return depotHeadService.countDepotHead(driverId, type, subType, roleType, hasDebt, status, purchaseStatus, number, linkNumber,
+//                beginTime, endTime, materialParam, keyword, organId, creator, depotId, accountId, remark);
     }
 
     @Override
