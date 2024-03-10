@@ -18,6 +18,12 @@ public class User {
 
     private String licensePlateNumber;
 
+    private String phoneNum;
+    private String telephone;
+    private String email;
+    private String birthday;
+    private String sex;
+
     public Long getId() {
         return id;
     }

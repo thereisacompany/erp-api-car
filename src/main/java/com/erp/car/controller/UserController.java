@@ -123,10 +123,11 @@ public class UserController {
                     msgTip = "user can login";
                     //验证通过 ，可以登录，放入session，记录登录日志
                     user = userService.getUserByLoginName(loginName);
+
 //                    if(user.getTenantId()!=null) {
 //                        token = token + "_" + user.getTenantId();
 //                    }
-                    redisService.storageObjectBySession(token,"CaruserId",user.getId());
+                    redisService.storageObjectBySession(token,"CaruserId", user.getId());
 //                    if(user.getTenantId()!=null) {
 //                        Tenant tenant = tenantService.getTenantByTenantId(user.getTenantId());
 //                        if(tenant!=null) {
@@ -182,7 +183,7 @@ public class UserController {
             System.out.println(userId);
 //            User user = userService.getUser(userId);
             UserCar user = userService.getCarUser(userId);
-            System.out.println(user.getUsername());
+//            System.out.println(user.getUsername());
 //            user.setPassword(null);
             data.put("user", user);
             res.code = 200;
