@@ -81,7 +81,7 @@
       distinct
     </if>
     jc.id, username, login_name, password, jc.Status,jc.supplier_id,license_plate_number,
-    phone_num, telephone, email, birthday
+    phone_num, telephone, email, birthday, sex
     from jsh_caruser jc
     left join jsh_vehicle jv on jc.supplier_id = jv.driver
     left join jsh_supplier js on jc.supplier_id = js.id
