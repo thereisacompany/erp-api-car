@@ -319,13 +319,10 @@ public class FrontEndController {
 
     @PutMapping(value = "/delivery/assign")
     @ApiOperation(value = "司機掃描QRCode, 自動派發")
-    public Object deliveryAssign(@ApiParam(value = "配送單號", required = true)
-                                     @RequestParam(value = "number") String number,
-                                 @ApiParam(value = "司機id", required = true)
-                                 @RequestParam(value = "driverId") Integer driverId,
+    public Object deliveryAssign(@RequestBody DepotDeliveryVo4Body delivery,
                                  HttpServletRequest request) throws Exception {
         JSONObject result = ExceptionConstants.standardSuccess();
-        depotHeadService.assignDelivery(number, driverId, request);
+        depotHeadService.assignDelivery(delivery.getNumber(), delivery.getDriverId(), request);
         return result;
     }
 

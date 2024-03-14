@@ -40,7 +40,7 @@ public class BusinessRunTimeException extends RuntimeException{
         json.put("type", "fail");
         json.put("code", code);
 
-        httpStatus = HttpStatus.BAD_REQUEST;
+        httpStatus = HttpStatus.OK;
         json.put("result", reason);
 
 //        Map<String, Object> objectMap = new HashMap<>();
