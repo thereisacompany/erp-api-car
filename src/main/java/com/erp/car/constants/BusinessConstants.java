@@ -35,6 +35,9 @@ public class BusinessConstants {
     public static final String DEPOTHEAD_TYPE_OUT = "出庫";
     public static final String DEPOTHEAD_SUBTYPE_OUT = "配送單";
     public static final String DEPOTHEAD_TYPE_OTHER = "其它";
+    public static final String DEPOTHEAD_SUBTYPE_TRANSFER = "移倉";
+    public static final String DEPOTHEAD_SUBTYPE_PICKUP = "門市取貨";
+    public static final String DEPOTHEAD_SUBTYPE_PICKUP1 = "門市取貨派送";
     /**
      * 付款类型 payType //现付/预付款
      * */

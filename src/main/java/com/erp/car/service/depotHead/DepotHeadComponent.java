@@ -68,7 +68,7 @@ public class DepotHeadComponent implements ICommonQuery {
         String subType = StringUtil.getInfo(search, "subType");
         if(type.equals(BusinessConstants.DEPOTHEAD_TYPE_OUT)) {
             if(subType==null || (subType != null && subType.isEmpty())) {
-                subType = BusinessConstants.DEPOTHEAD_SUBTYPE_OUT;
+                subType = BusinessConstants.DEPOTHEAD_SUBTYPE_TRANSFER;
             }
         }
         String roleType = StringUtil.getInfo(search, "roleType");
