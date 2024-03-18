@@ -790,4 +790,8 @@
             and m.id != #{id}
         </if>
     </select>
+
+    <select id="selectMaterialPickupName" resultType="java.lang.String">
+        select name from jsh_material_pickup where id = #{id}
+    </select>
 </mapper>

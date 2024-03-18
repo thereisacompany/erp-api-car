@@ -191,7 +191,9 @@ public class DepotHeadService {
             throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_HEADER_ID_NOT_EXIST_CODE,
                     String.format(ExceptionConstants.DEPOT_HEAD_HEADER_ID_NOT_EXIST_MSG));
         } else {
-            if(!depotHead.getSubType().equals(BusinessConstants.DEPOTHEAD_SUBTYPE_OUT)) {
+            if(!depotHead.getSubType().equals(BusinessConstants.DEPOTHEAD_SUBTYPE_OUT)
+                    && !depotHead.getSubType().equals(BusinessConstants.DEPOTHEAD_SUBTYPE_PICKUP)
+                    && !depotHead.getSubType().equals(BusinessConstants.DEPOTHEAD_SUBTYPE_PICKUP1)) {
                 throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_UN_OUT_TO_DELIVERY_FAILED_CODE,
                         String.format(ExceptionConstants.DEPOT_HEAD_UN_OUT_TO_DELIVERY_FAILED_MSG));
             }
@@ -1226,7 +1228,13 @@ public class DepotHeadService {
                     //商品信息简述
                     if(materialsListMap!=null) {
                         MaterialsListVo vo = materialsListMap.get(String.valueOf(dh.getId()));
-                        dh.setMaterialsList(vo.getMaterialsList());
+                        String materialsList = vo.getMaterialsList();
+                        if(materialsList == null || materialsList.isEmpty()) {
+                            if(dh.getMaterialId()!=null) {
+                                materialsList = materialMapperEx.selectMaterialPickupName(dh.getMaterialId());
+                            }
+                        }
+                        dh.setMaterialsList(materialsList);
                         dh.setCategoryId(vo.getCategoryId());
                         dh.setMaterialNumber(vo.getMaterialNumber());
                         dh.setMaterialCount(vo.getMaterialCount());
@@ -1251,7 +1259,6 @@ public class DepotHeadService {
 //            Map<Long,String> accountMap = accountService.getAccountMap();
             List<DepotHeadVo4List> list = depotHeadMapperEx.getDetailByNumber(number);
 
-            System.out.println(">>>>");
             System.out.println(list.size());
             if (null != list) {
                 List<Long> idList = new ArrayList<>();
@@ -1306,7 +1313,13 @@ public class DepotHeadService {
                     //商品信息简述
                     if(materialsListMap!=null) {
                         MaterialsListVo vo = materialsListMap.get(String.valueOf(dh.getId()));
-                        dh.setMaterialsList(vo.getMaterialsList());
+                        String materialsList = vo.getMaterialsList();
+                        if(materialsList == null || materialsList.isEmpty()) {
+                            if(dh.getMaterialId()!=null) {
+                                materialsList = materialMapperEx.selectMaterialPickupName(dh.getMaterialId());
+                            }
+                        }
+                        dh.setMaterialsList(materialsList);
                         dh.setCategoryId(vo.getCategoryId());
                         dh.setMaterialNumber(vo.getMaterialNumber());
                         dh.setMaterialCount(vo.getMaterialCount());

@@ -153,4 +153,6 @@ public interface MaterialMapperEx {
             @Param("otherField3") String otherField3,
             @Param("unit") String unit,
             @Param("unitId") Long unitId);
+
+    String selectMaterialPickupName(@Param("id") Long id);
 }

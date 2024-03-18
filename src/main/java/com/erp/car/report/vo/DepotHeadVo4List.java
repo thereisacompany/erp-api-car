@@ -25,6 +25,7 @@ public class DepotHeadVo4List extends DepotHead{
 
     private String allocationProjectName;
 
+    private Long materialId;
     private String materialsList;
 
     private Long categoryId;
@@ -151,6 +152,14 @@ public class DepotHeadVo4List extends DepotHead{
 
     public void setAllocationProjectName(String allocationProjectName) {
         this.allocationProjectName = allocationProjectName;
+    }
+
+    public Long getMaterialId() {
+        return materialId;
+    }
+
+    public void setMaterialId(Long materialId) {
+        this.materialId = materialId;
     }
 
     public String getMaterialsList() {

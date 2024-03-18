@@ -953,9 +953,10 @@
     </select>
 
     <select id="getDetailByNumber" resultMap="ResultMapEx">
-        select dh.*, concat(dh.sub_type,dh.type) as depotHeadType, a.name AccountName,
+        select dh.*, jdi.material_id, concat(dh.sub_type,dh.type) as depotHeadType, a.name AccountName,
                s.supplier OrganName, s.contacts, s.telephone, s.address
         from jsh_depot_head dh
+        left join jsh_depot_item jdi on dh.id = jdi.header_id
         left join jsh_supplier s on dh.organ_id=s.id and ifnull(s.delete_Flag,'0') !='1'
         left join jsh_account a on dh.account_id=a.id and ifnull(a.delete_Flag,'0') !='1'
         where 1=1

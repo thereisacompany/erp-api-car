@@ -37,15 +37,16 @@ public class MaterialsListVo {
 
     public String getMaterialsList() {
         List<String> retList = new ArrayList<>();
-        String[] list = materialsList.split(",");
-        for(String str : list) {
-            String[] data = str.split("[|]");
-            double number = 0.0;
-            if(data.length > 1) {
-                number = Double.parseDouble(data[1]);
+        if(materialsList != null) {
+            String[] list = materialsList.split(",");
+            for (String str : list) {
+                String[] data = str.split("[|]");
+                double number = 0.0;
+                if (data.length > 1) {
+                    number = Double.parseDouble(data[1]);
+                }
+                retList.add(data[0]);
             }
-//            retList.add(data[0] + "     *" + (int)number);
-            retList.add(data[0]);
         }
 
         return String.join(",", retList);
