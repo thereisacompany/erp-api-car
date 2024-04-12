@@ -71,7 +71,6 @@ public class FrontEndController {
             }
 
             List<?> list = depotHeadComponent.select(parameterMap);
-            System.out.println("getDepotList lise size >>>"+list.size());
             res.code = 200;
             if (list != null) {
                 objectMap.put("total", depotHeadService.counts(parameterMap));

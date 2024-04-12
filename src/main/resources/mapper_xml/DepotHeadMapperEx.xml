@@ -227,6 +227,9 @@
         <if test="endTime != null">
             and jdd.assign_date &lt;= #{endTime}
         </if>
+        <if test="dStatus != null">
+            and jdd.status not in (0,5)
+        </if>
 
         <if test="keyword != null and keyword !=''">
             <bind name="bindKey" value="'%'+keyword+'%'"/>
@@ -250,7 +253,6 @@
         <if test="depotId != null">
             and di.depot_id=#{depotId}
         </if>
-
 
         <if test="counterId != null">
             and di.counter_id=#{counterId}
@@ -320,6 +322,10 @@
         <if test="endTime != null">
             and jdd.assign_date &lt;= #{endTime}
         </if>
+        <if test="dStatus != null">
+            and jdd.status not in (0,5)
+        </if>
+
         <if test="materialParam != null and materialParam !=''">
             <bind name="bindKey" value="'%'+materialParam+'%'"/>
             and (me.bar_code like #{bindKey} or m.name like #{bindKey} or m.standard like #{bindKey} or m.model like #{bindKey}

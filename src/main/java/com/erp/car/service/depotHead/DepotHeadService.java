@@ -293,10 +293,19 @@ public class DepotHeadService {
         List<DepotHeadVo4List> resList = new ArrayList<>();
 
         try{
-        List<DepotHeadVo4List> list = depotHeadMapperEx.selectCarByConditionDepotHead(driverId, type, subType, number, linkNumber, beginTime, endTime,
-              keyword, organId, MNumber, creator, depotId, counterId, accountId, remark, offset, rows);
+            Integer dStatus = null;
+            if(beginTime != null && endTime != null) {
+                String[] begin = beginTime.split(" ");
+                String[] end = endTime.split(" ");
+                if (begin[0].equals(end[0])) {
+                    beginTime = null;
+                    dStatus = 1;
+                }
+            }
 
-            System.out.println("selectCar  list size >>>"+list.size());
+            List<DepotHeadVo4List> list = depotHeadMapperEx.selectCarByConditionDepotHead(driverId, type, subType, number, linkNumber,
+                    beginTime, endTime, dStatus, keyword, organId, MNumber, creator, depotId, counterId, accountId, remark, offset, rows);
+
             if(list !=null) {
                 for (DepotHeadVo4List dh : list) {
                     String mKey = dh.getId() + "" + dh.getSubId() + "" + dh.getMNumber();
@@ -558,6 +567,7 @@ public class DepotHeadService {
                     done.addAndGet(count);
                     break;
                 case 6:
+                    doing.addAndGet(count);
                     abnormal.addAndGet(count);
                     break;
             }
@@ -580,8 +590,18 @@ public class DepotHeadService {
             String [] organArray = null;//getOrganArray(subType, purchaseStatus);
             beginTime = Tools.parseDayToTime(beginTime,BusinessConstants.DAY_FIRST_TIME);
             endTime = Tools.parseDayToTime(endTime,BusinessConstants.DAY_LAST_TIME);
-            result=depotHeadMapperEx.countsByDepotHead(driverId, type, subType, creatorArray, hasDebt, statusArray, purchaseStatusArray, number, linkNumber, beginTime, endTime,
-                   materialParam, keyword, organId, organArray, creator, depotId, depotArray, accountId, remark);
+            Integer dStatus = null;
+            if(beginTime != null && endTime != null) {
+                String[] begin = beginTime.split(" ");
+                String[] end = endTime.split(" ");
+                if (begin[0].equals(end[0])) {
+                    beginTime = null;
+                    dStatus = 1;
+                }
+            }
+            result=depotHeadMapperEx.countsByDepotHead(driverId, type, subType, creatorArray, hasDebt, statusArray, purchaseStatusArray,
+                    number, linkNumber, beginTime, endTime, dStatus, materialParam, keyword, organId, organArray, creator,
+                    depotId, depotArray, accountId, remark);
         }catch(Exception e){
             JshException.readFail(logger, e);
         }
