@@ -189,13 +189,13 @@ public class DepotHeadService {
         DepotHead depotHead = depotHeadMapper.selectByPrimaryKey(headerId);
         if(depotHead == null) {
             throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_HEADER_ID_NOT_EXIST_CODE,
-                    String.format(ExceptionConstants.DEPOT_HEAD_HEADER_ID_NOT_EXIST_MSG));
+                    ExceptionConstants.DEPOT_HEAD_HEADER_ID_NOT_EXIST_MSG);
         } else {
             if(!depotHead.getSubType().equals(BusinessConstants.DEPOTHEAD_SUBTYPE_OUT)
                     && !depotHead.getSubType().equals(BusinessConstants.DEPOTHEAD_SUBTYPE_PICKUP)
                     && !depotHead.getSubType().equals(BusinessConstants.DEPOTHEAD_SUBTYPE_PICKUP1)) {
                 throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_UN_OUT_TO_DELIVERY_FAILED_CODE,
-                        String.format(ExceptionConstants.DEPOT_HEAD_UN_OUT_TO_DELIVERY_FAILED_MSG));
+                        ExceptionConstants.DEPOT_HEAD_UN_OUT_TO_DELIVERY_FAILED_MSG);
             }
         }
 
@@ -203,7 +203,17 @@ public class DepotHeadService {
         DepotDetail detail = depotHeadMapper.selectDetailByHeaderId(headerId);
         if(detail == null || detail != null && detail.getDriverId() == 0) {
             throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_NOT_ASSIGN_DRIVER_CODE,
-                    String.format(ExceptionConstants.DEPOT_HEAD_NOT_ASSIGN_DRIVER_MSG));
+                    ExceptionConstants.DEPOT_HEAD_NOT_ASSIGN_DRIVER_MSG);
+        }
+
+        // 若配送單的狀態為完成(5)或異常(6)，不得再改為其他狀態
+        if(detail.getStatus().equals("5")) {
+            throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_STATUS_ALREADY_DONE_CODE,
+                    ExceptionConstants.DEPOT_HEAD_STATUS_ALREADY_DONE_MSG);
+        }
+        if(detail.getStatus().equals("6")) {
+            throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_STATUS_ALREADY_ERROR_CODE,
+                    ExceptionConstants.DEPOT_HEAD_STATUS_ALREADY_ERROR_MSG);
         }
 
         try{
