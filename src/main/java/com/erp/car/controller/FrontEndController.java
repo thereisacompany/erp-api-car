@@ -75,13 +75,11 @@ public class FrontEndController {
             if (list != null) {
                 objectMap.put("total", depotHeadService.counts(parameterMap));
                 objectMap.put("rows", list);
-//                res.data = list;
-                res.data = objectMap;
             } else {
                 objectMap.put("total", BusinessConstants.DEFAULT_LIST_NULL_NUMBER);
-                objectMap.put("rows", new ArrayList<Object>());
-                res.data = objectMap;
+                objectMap.put("rows", new ArrayList<>());
             }
+            res.data = objectMap;
         } catch(Exception e){
             e.printStackTrace();
             res.code = 500;

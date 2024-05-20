@@ -292,6 +292,7 @@
             and dh.sub_type!=#{subType}
         </if>
 
+        and dh.status in (0,1)
         and jdd.driver_id = #{driverId}
 
         <if test="statusArray != null and statusArray !=''">
