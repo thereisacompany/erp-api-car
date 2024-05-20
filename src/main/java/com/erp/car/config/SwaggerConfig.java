@@ -41,7 +41,7 @@ public class SwaggerConfig {
 		return new ApiInfoBuilder()
 				.title("ERPCar系統")		// 標題
 				.description("Car各項資料功能")// 描述
-				.version("1.2.4")	// 版本
+				.version("1.2.6")	// 版本
 				.license("")	// 設置許可證訊息 Apache LICENSE 2.0
 				.licenseUrl("")	// 設置許可證url位址
 				.contact(new Contact("RD", "", "")) // 該api人員的聯絡訊息
