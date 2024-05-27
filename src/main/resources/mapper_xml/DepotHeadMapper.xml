@@ -60,6 +60,12 @@
     <result column="status" jdbcType="VARCHAR" property="status" />
     <result column="date" jdbcType="VARCHAR" property="date" />
   </resultMap>
+  <resultMap id="AgreedResultMap" type="com.erp.car.report.vo.AgreedDelivery">
+    <result column="detail_id" jdbcType="BIGINT" property="detailId" />
+    <result column="datetime" jdbcType="TIMESTAMP" property="datetime" />
+    <result column="creator" jdbcType="VARCHAR" property="name" />
+    <result column="is_default" jdbcType="INTEGER" property="isDefault" />
+  </resultMap>
   <resultMap id="ReportResultMap" type="com.erp.car.report.entities.DepotReport">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="datetime" jdbcType="TIMESTAMP" property="datetime" />
@@ -876,8 +882,6 @@
     where id = #{id,jdbcType=BIGINT}
   </update>
 
-
-
   <select id="selectDetailRecord" resultMap="StatusResultMap">
     SELECT status, date
     FROM jsh_depot_record
@@ -885,6 +889,21 @@
     ORDER BY date DESC
   </select>
 
+  <insert id="insertAgreedDeliver" parameterType="com.erp.car.report.vo.AgreedDelivery">
+    INSERT INTO erp_dev.jsh_depot_agreed_delivery (detail_id, datetime, creator, is_default)
+    VALUES (#{detailId,jdbcType=BIGINT}, #{datetime,jdbcType=TIMESTAMP}, #{name,jdbcType=VARCHAR}, #{isDefault,jdbcType=INTEGER})
+  </insert>
+
+  <update id="updateAgreedDelivery" parameterType="java.lang.Long">
+    UPDATE jsh_depot_agreed_delivery SET is_default = 0 WHERE detail_id = ${detailId}
+  </update>
+
+  <select id="selectAgreedDelivery" resultMap="AgreedResultMap">
+    SELECT datetime, creator, is_default
+    FROM jsh_depot_agreed_delivery
+    WHERE detail_id = ${detailId}
+    ORDER BY is_default DESC, datetime DESC
+  </select>
 
   <select id="selectHeaderDetailByHeaderId" resultMap="DetailResultMap">
     SELECT jdd.id, jdd.status, js.id supplierId, js.supplier, jdd.assign_date, jdd.assign_user, jv.license_plate_number, jdd.file_path

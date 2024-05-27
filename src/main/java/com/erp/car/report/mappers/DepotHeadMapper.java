@@ -1,6 +1,7 @@
 package com.erp.car.report.mappers;
 
 import com.erp.car.report.entities.*;
+import com.erp.car.report.vo.AgreedDelivery;
 import com.erp.car.report.vo.DeliveryStatus;
 import com.erp.car.report.vo.DepotHeadDetail;
 import org.apache.ibatis.annotations.Mapper;
@@ -41,6 +42,11 @@ public interface DepotHeadMapper {
     DepotHeadDetail selectHeaderDetailByPrimaryKey(@Param("id") Long ig);
 
     List<DeliveryStatus> selectDetailRecord(@Param("detailId") Long detailId);
+
+    int insertAgreedDeliver(AgreedDelivery record);
+    int updateAgreedDelivery(@Param("detailId") Long detailId);
+
+    List<AgreedDelivery> selectAgreedDelivery(@Param("detailId") Long detailId);
 
     DepotDetail selectDetailByHeaderId(@Param("headerId") Long headerId);
 

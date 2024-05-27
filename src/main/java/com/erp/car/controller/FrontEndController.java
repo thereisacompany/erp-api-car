@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.erp.car.constants.BusinessConstants;
 import com.erp.car.constants.ExceptionConstants;
 import com.erp.car.report.entities.*;
+import com.erp.car.report.vo.AgreedDelivery;
 import com.erp.car.report.vo.DepotHeadDelivery;
 import com.erp.car.report.vo.DepotHeadVo4List;
 import com.erp.car.service.depotHead.DepotHeadComponent;
@@ -320,6 +321,14 @@ public class FrontEndController {
                                  HttpServletRequest request) throws Exception {
         JSONObject result = ExceptionConstants.standardSuccess();
         depotHeadService.assignDelivery(delivery.getNumber(), delivery.getDriverId(), request);
+        return result;
+    }
+
+    @PostMapping(value = "/delivery/agreed")
+    @ApiOperation(value = "設定約配日")
+    public Object deliveryAgreed(@RequestBody AgreedDeliveryVo4Body agreed, HttpServletRequest request) throws Exception {
+        JSONObject result = ExceptionConstants.standardSuccess();
+        depotHeadService.deliveryAgreed(agreed.getNumber(), agreed.getDatetime(), request);
         return result;
     }
 

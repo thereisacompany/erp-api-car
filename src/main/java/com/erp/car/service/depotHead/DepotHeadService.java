@@ -164,6 +164,21 @@ public class DepotHeadService {
             dhd.setFilePath(detail.getFilePath());
             dhd.setStatus(detail.getStatus());
 
+            List<AgreedDelivery> agreedList = depotHeadMapper.selectAgreedDelivery(detail.getId());
+            if(!agreedList.isEmpty()) {
+                List<JSONObject> list = new ArrayList<>();
+                agreedList.stream().forEach(agreedDelivery -> {
+                    JSONObject json = new JSONObject();
+                    json.put("datetime", agreedDelivery.getDatetime());
+                    json.put("name", agreedDelivery.getName());
+                    json.put("isDefault", agreedDelivery.getIsDefault()==1?true:false);
+                    list.add(json);
+                });
+                dhd.setAgreedDelivery(list);
+            } else {
+                dhd.setAgreedDelivery(new ArrayList<>());
+            }
+
             List<DeliveryStatus> statusList = depotHeadMapper.selectDetailRecord(detail.getId());
             if(statusList.size() > 0) {
                 List<DeliveryStatus> list = new ArrayList<>();
@@ -176,7 +191,7 @@ public class DepotHeadService {
                 });
                 dhd.setDeliveryStatusList(list);
             } else {
-                dhd.setDeliveryStatusList(new ArrayList<DeliveryStatus>());
+                dhd.setDeliveryStatusList(new ArrayList<>());
             }
 
         }
@@ -2346,6 +2361,37 @@ public class DepotHeadService {
         } catch (Exception e) {
             JshException.writeFail(logger, e);
         }
+    }
+
+    @Transactional(value = "transactionManager", rollbackFor = Exception.class)
+    public void deliveryAgreed(String number, String datetime, HttpServletRequest request) throws Exception {
+        // 是否有此配送單
+        DepotHead depotHead = depotHeadMapper.selectByNumber(number);
+        if(depotHead == null) {
+            throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_HEADER_ID_NOT_EXIST_CODE,
+                    String.format(ExceptionConstants.DEPOT_HEAD_HEADER_ID_NOT_EXIST_MSG));
+        } else {
+            if(!depotHead.getSubType().equals(BusinessConstants.DEPOTHEAD_SUBTYPE_OUT)
+                    && !depotHead.getSubType().equals(BusinessConstants.DEPOTHEAD_SUBTYPE_PICKUP)
+                    && !depotHead.getSubType().equals(BusinessConstants.DEPOTHEAD_SUBTYPE_PICKUP1)) {
+                throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_UN_OUT_TO_DELIVERY_FAILED_CODE,
+                        String.format(ExceptionConstants.DEPOT_HEAD_UN_OUT_TO_DELIVERY_FAILED_MSG));
+            }
+        }
+
+        DepotDetail detail = depotHeadMapper.selectDetailByHeaderId(depotHead.getId());
+
+        depotHeadMapper.updateAgreedDelivery(detail.getId());
+        AgreedDelivery agreedDelivery = new AgreedDelivery();
+        agreedDelivery.setDetailId(detail.getId());
+        agreedDelivery.setDatetime(datetime);
+        User user = userService.getCurrentUser();
+        agreedDelivery.setName(user.getUsername());
+        agreedDelivery.setIsDefault(1);
+        depotHeadMapper.insertAgreedDeliver(agreedDelivery);
+
+        logService.insertLog("司機設定約配日", BusinessConstants.LOG_OPERATION_TYPE_ADD, request);
+
     }
 
 }
