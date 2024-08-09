@@ -2380,16 +2380,18 @@ public class DepotHeadService {
         }
 
         DepotDetail detail = depotHeadMapper.selectDetailByHeaderId(depotHead.getId());
-
         depotHeadMapper.updateAgreedDelivery(detail.getId());
         AgreedDelivery agreedDelivery = new AgreedDelivery();
         agreedDelivery.setDetailId(detail.getId());
         agreedDelivery.setDatetime(datetime);
         User user = userService.getCurrentUser();
-        agreedDelivery.setName(user.getUsername());
+        if(user == null) {
+            agreedDelivery.setName("Server");
+        } else {
+            agreedDelivery.setName(user.getUsername());
+        }
         agreedDelivery.setIsDefault(1);
         depotHeadMapper.insertAgreedDeliver(agreedDelivery);
-
         logService.insertLog("司機設定約配日", BusinessConstants.LOG_OPERATION_TYPE_ADD, request);
 
     }

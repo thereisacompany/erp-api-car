@@ -890,7 +890,7 @@
   </select>
 
   <insert id="insertAgreedDeliver" parameterType="com.erp.car.report.vo.AgreedDelivery">
-    INSERT INTO erp_dev.jsh_depot_agreed_delivery (detail_id, datetime, creator, is_default)
+    INSERT INTO jsh_depot_agreed_delivery (detail_id, datetime, creator, is_default)
     VALUES (#{detailId,jdbcType=BIGINT}, #{datetime,jdbcType=TIMESTAMP}, #{name,jdbcType=VARCHAR}, #{isDefault,jdbcType=INTEGER})
   </insert>
 
