@@ -2270,6 +2270,7 @@ public class DepotHeadService {
 //        System.out.println(">>>"+ LocalDate.parse(dateStr, formatterDate).format(formatterChangeDate));
 
 //        String a = "【】";
+
     }
 
     @Transactional(value = "transactionManager", rollbackFor = Exception.class)
@@ -2369,14 +2370,21 @@ public class DepotHeadService {
         DepotHead depotHead = depotHeadMapper.selectByNumber(number);
         if(depotHead == null) {
             throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_HEADER_ID_NOT_EXIST_CODE,
-                    String.format(ExceptionConstants.DEPOT_HEAD_HEADER_ID_NOT_EXIST_MSG));
+                    ExceptionConstants.DEPOT_HEAD_HEADER_ID_NOT_EXIST_MSG);
         } else {
             if(!depotHead.getSubType().equals(BusinessConstants.DEPOTHEAD_SUBTYPE_OUT)
                     && !depotHead.getSubType().equals(BusinessConstants.DEPOTHEAD_SUBTYPE_PICKUP)
                     && !depotHead.getSubType().equals(BusinessConstants.DEPOTHEAD_SUBTYPE_PICKUP1)) {
                 throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_UN_OUT_TO_DELIVERY_FAILED_CODE,
-                        String.format(ExceptionConstants.DEPOT_HEAD_UN_OUT_TO_DELIVERY_FAILED_MSG));
+                        ExceptionConstants.DEPOT_HEAD_UN_OUT_TO_DELIVERY_FAILED_MSG);
             }
+        }
+
+        // if datetime < now
+        LocalDateTime dt = LocalDateTime.parse(datetime, formatterChange);
+        if(LocalDateTime.now().isAfter(dt)) {
+            throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_DELIVERY_AGREED_VALID_CODE,
+                    ExceptionConstants.DEPOT_HEAD_DELIVERY_AGREED_VALID_MSG);
         }
 
         DepotDetail detail = depotHeadMapper.selectDetailByHeaderId(depotHead.getId());

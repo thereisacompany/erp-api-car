@@ -339,6 +339,8 @@ public class ExceptionConstants {
     public static final String DEPOT_HEAD_UN_OUT_TO_DELIVERY_FAILED_MSG = "抱歉，只有配送單的單據才可以調整訂單狀態";
     public static final int DEPOT_HEAD_UN_DETAIL_GET_FAILED_CODE = 8000024;
     public static final String DEPOT_HEAD_UN_DETAIL_GET_FAILED_MSG = "抱歉，查無此訂單配送細節id";
+    public static final int DEPOT_HEAD_DELIVERY_AGREED_VALID_CODE = 8000025;
+    public static final String DEPOT_HEAD_DELIVERY_AGREED_VALID_MSG = "約配時間不得小於現在時間";
 
     /**
      *  单据信息
