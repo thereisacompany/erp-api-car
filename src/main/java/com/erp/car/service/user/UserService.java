@@ -368,7 +368,7 @@ public class UserService {
      */
     public User getCurrentUser()throws Exception{
         HttpServletRequest request = ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getRequest();
-        Object obj = redisService.getObjectFromSessionByKey(request,"userId");
+        Object obj = redisService.getObjectFromSessionByKey(request,"CaruserId");
         if(obj == null) {
             return null;
         }
