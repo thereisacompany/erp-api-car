@@ -62,9 +62,10 @@ public class FrontEndController {
         try {
             Map<String, String> parameterMap = ParamUtils.requestToMap(request);
             parameterMap.put(Constants.SEARCH, search);
-            Map<String, Object> objectMap = new HashMap<String, Object>();
-            if (pageSize != null && pageSize <= 0) {
-                pageSize = 10;
+            Map<String, Object> objectMap = new HashMap<>();
+            if (pageSize != null) { //&& pageSize <= 0
+//                pageSize = 10;
+                parameterMap.put(Constants.PAGE_SIZE, String.valueOf(500));
             }
             String offset = ParamUtils.getPageOffset(currentPage, pageSize);
             if (StringUtil.isNotEmpty(offset)) {
