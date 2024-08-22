@@ -6,25 +6,25 @@
         <result column="user_id" jdbcType="BIGINT" property="userId" />
         <result column="operation" jdbcType="VARCHAR" property="operation" />
         <result column="client_ip" jdbcType="VARCHAR" property="clientIp" />
-        <result column="created_at" jdbcType="TIMESTAMP" property="createAt" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
         <result column="status" jdbcType="TINYINT" property="status" />
         <result column="content" jdbcType="VARCHAR" property="content" />
     </resultMap>
 
     <sql id="Base_Column_List">
-        id, user_id, operation, client_ip, created_at, status, content
+        id, user_id, operation, client_ip, create_time, status, content
     </sql>
 
     <insert id="insert" parameterType="com.erp.car.report.entities.Log">
-        insert into hf_log (id, user_id, operation,
-        client_ip, created_at, status, content)
+        insert into jsh_log (id, user_id, operation,
+        client_ip, create_time, status, content)
         values (#{id,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, #{operation,jdbcType=VARCHAR},
-        #{clientIp,jdbcType=VARCHAR}, #{createAt,jdbcType=TIMESTAMP}, #{status,jdbcType=TINYINT},
+        #{clientIp,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{status,jdbcType=TINYINT},
         #{content,jdbcType=VARCHAR})
     </insert>
 
     <insert id="insertSelective" parameterType="com.erp.car.report.entities.Log">
-        insert into hf_log
+        insert into jsh_log
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">
                 id,
@@ -38,8 +38,8 @@
             <if test="clientIp != null">
                 client_ip,
             </if>
-            <if test="createAt != null">
-                created_at,
+            <if test="createTime != null">
+                create_time,
             </if>
             <if test="status != null">
                 status,
@@ -61,8 +61,8 @@
             <if test="clientIp != null">
                 #{clientIp,jdbcType=VARCHAR},
             </if>
-            <if test="createAt != null">
-                #{createAt,jdbcType=TIMESTAMP},
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
             </if>
             <if test="status != null">
                 #{status,jdbcType=TINYINT},
@@ -74,8 +74,8 @@
     </insert>
 
     <select id="getCountByIpAndDate" resultType="java.lang.Long">
-        select count(1) from hf_log
-        where user_id=#{userId} and operation=#{moduleName} and client_ip=#{clientIp} and created_at=#{createTime}
+        select count(1) from jsh_log
+        where user_id=#{userId} and operation=#{moduleName} and client_ip=#{clientIp} and create_time=#{createTime}
     </select>
 
 </mapper>

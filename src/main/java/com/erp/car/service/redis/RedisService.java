@@ -96,10 +96,10 @@ public class RedisService {
     public void deleteObjectByUserAndIp(Long userId, String clientIp){
         Set<String> tokens = redisTemplate.keys("*");
         for(String token : tokens) {
-            Object userIdValue = redisTemplate.opsForHash().get(token, "userId");
+            Object userIdValue = redisTemplate.opsForHash().get(token, "CaruserId");
             Object clientIpValue = redisTemplate.opsForHash().get(token, "clientIp");
             if(userIdValue!=null && clientIpValue!=null && userIdValue.equals(userId.toString()) && clientIpValue.equals(clientIp)) {
-                redisTemplate.opsForHash().delete(token, "userId");
+                redisTemplate.opsForHash().delete(token, "CaruserId");
             }
         }
     }

@@ -368,12 +368,22 @@ public class UserService {
      */
     public User getCurrentUser()throws Exception{
         HttpServletRequest request = ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getRequest();
-        Object obj = redisService.getObjectFromSessionByKey(request,"CaruserId");
+        Object obj = redisService.getObjectFromSessionByKey(request,"userId");
         if(obj == null) {
             return null;
         }
         Long userId = Long.parseLong(obj.toString());
         return getUser(userId);
+    }
+
+    public UserCar getCurrentCarUser()throws Exception{
+        HttpServletRequest request = ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getRequest();
+        Object obj = redisService.getObjectFromSessionByKey(request,"CaruserId");
+        if(obj == null) {
+            return null;
+        }
+        Long userId = Long.parseLong(obj.toString());
+        return getCarUser(userId);
     }
 
     /**
@@ -453,7 +463,7 @@ public class UserService {
      * @return
      */
     public Long getUserId(HttpServletRequest request) throws Exception{
-        Object userIdObj = redisService.getObjectFromSessionByKey(request,"userId");
+        Object userIdObj = redisService.getObjectFromSessionByKey(request,"CaruserId");
         Long userId = null;
         if(userIdObj != null) {
             userId = Long.parseLong(userIdObj.toString());

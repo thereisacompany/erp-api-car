@@ -2392,7 +2392,7 @@ public class DepotHeadService {
         AgreedDelivery agreedDelivery = new AgreedDelivery();
         agreedDelivery.setDetailId(detail.getId());
         agreedDelivery.setDatetime(datetime);
-        User user = userService.getCurrentUser();
+        UserCar user = userService.getCurrentCarUser();
         if(user == null) {
             agreedDelivery.setName("Server");
         } else {

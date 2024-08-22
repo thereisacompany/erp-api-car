@@ -83,7 +83,7 @@ public class UserController {
             String loginName = userParam.getLoginName().trim();
             String password = userParam.getPassword().trim();
             //判断用户是否已经登录过，登录过不再处理
-            Object userId = redisService.getObjectFromSessionByKey(request,"userId");
+            Object userId = redisService.getObjectFromSessionByKey(request,"CaruserId");
             if (userId != null) {
                 logger.info("====用户已经登录过, login 方法调用结束====");
                 msgTip = "user already login";
@@ -127,6 +127,7 @@ public class UserController {
 //                    if(user.getTenantId()!=null) {
 //                        token = token + "_" + user.getTenantId();
 //                    }
+
                     redisService.storageObjectBySession(token,"CaruserId", user.getId());
 //                    if(user.getTenantId()!=null) {
 //                        Tenant tenant = tenantService.getTenantByTenantId(user.getTenantId());
@@ -142,15 +143,15 @@ public class UserController {
                 default:
                     break;
             }
-            Map<String, Object> data = new HashMap<String, Object>();
+            Map<String, Object> data = new HashMap<>();
             data.put("msgTip", msgTip);
             if(user!=null){
 //                String roleType = userService.getRoleTypeByUserId(user.getId()).getType(); //角色类型
 //                redisService.storageObjectBySession(token,"roleType",roleType);
-//                redisService.storageObjectBySession(token,"clientIp", Tools.getLocalIp(request));
-//                logService.insertLogWithUserId(user.getId(), user.getTenantId(), "用户",
-//                        new StringBuffer(BusinessConstants.LOG_OPERATION_TYPE_LOGIN).append(user.getLoginName()).toString(),
-//                        ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest());
+                redisService.storageObjectBySession(token,"clientIp", Tools.getLocalIp(request));
+                logService.insertLogWithUserId(user.getId(), "司機",
+                        new StringBuffer(BusinessConstants.LOG_OPERATION_TYPE_LOGIN).append(user.getLoginName()).toString(),
+                        ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest());
 //                JSONArray btnStrArr = userService.getBtnStrArrById(user.getId());
 //
                 data.put("token", token);
@@ -201,7 +202,7 @@ public class UserController {
     public BaseResponseInfo logout(HttpServletRequest request, HttpServletResponse response)throws Exception {
         BaseResponseInfo res = new BaseResponseInfo();
         try {
-            redisService.deleteObjectBySession(request,"userId");
+            redisService.deleteObjectBySession(request,"CaruserId");
         } catch(Exception e){
             e.printStackTrace();
             res.code = 500;
@@ -233,7 +234,7 @@ public class UserController {
         Map<String, Object> objectMap = new HashMap<String, Object>();
         try {
             String info = "";
-            Long userId = jsonObject.getLong("userId");
+            Long userId = jsonObject.getLong("CaruserId");
             String oldpwd = jsonObject.getString("oldpassword");
             String password = jsonObject.getString("password");
             User user = userService.getUser(userId);
