@@ -161,7 +161,7 @@ public class DepotHeadService {
             } else {
                 dhd.setAssignUser(null);
             }
-            if(!detail.getFilePath().isEmpty()) {
+            if(detail.getFilePath()!=null && !detail.getFilePath().isEmpty()) {
                 String[] paths = detail.getFilePath().split(",");
                 Arrays.sort(paths, (s1, s2) -> {
                     String num1 = s1.replaceAll("\\D+", "");
