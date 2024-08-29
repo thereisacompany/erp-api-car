@@ -63,6 +63,7 @@
   <resultMap id="AgreedResultMap" type="com.erp.car.report.vo.AgreedDelivery">
     <result column="detail_id" jdbcType="BIGINT" property="detailId" />
     <result column="datetime" jdbcType="TIMESTAMP" property="datetime" />
+    <result column="datetime_end" jdbcType="TIMESTAMP" property="datetimeEnd" />
     <result column="creator" jdbcType="VARCHAR" property="name" />
     <result column="is_default" jdbcType="INTEGER" property="isDefault" />
   </resultMap>
@@ -890,8 +891,8 @@
   </select>
 
   <insert id="insertAgreedDeliver" parameterType="com.erp.car.report.vo.AgreedDelivery">
-    INSERT INTO jsh_depot_agreed_delivery (detail_id, datetime, creator, is_default)
-    VALUES (#{detailId,jdbcType=BIGINT}, #{datetime,jdbcType=TIMESTAMP}, #{name,jdbcType=VARCHAR}, #{isDefault,jdbcType=INTEGER})
+    INSERT INTO jsh_depot_agreed_delivery (detail_id, datetime, datetime_end, creator, is_default)
+    VALUES (#{detailId,jdbcType=BIGINT}, #{datetime,jdbcType=TIMESTAMP}, #{datetimeEnd,jdbcType=TIMESTAMP}, #{name,jdbcType=VARCHAR}, #{isDefault,jdbcType=INTEGER})
   </insert>
 
   <update id="updateAgreedDelivery" parameterType="java.lang.Long">
@@ -899,7 +900,7 @@
   </update>
 
   <select id="selectAgreedDelivery" resultMap="AgreedResultMap">
-    SELECT datetime, creator, is_default
+    SELECT datetime, datetime_end, creator, is_default
     FROM jsh_depot_agreed_delivery
     WHERE detail_id = ${detailId}
     ORDER BY is_default DESC, datetime DESC

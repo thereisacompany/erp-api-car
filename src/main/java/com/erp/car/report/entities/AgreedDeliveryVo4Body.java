@@ -12,6 +12,7 @@ public class AgreedDeliveryVo4Body {
     @ApiModelProperty(value = "約配日", required = true)
     private String datetime;
 
-
+    @ApiModelProperty(value = "約配日-end")
+    private String datetimeEnd;
 
 }

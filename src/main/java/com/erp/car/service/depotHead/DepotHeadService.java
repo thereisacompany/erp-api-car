@@ -178,7 +178,15 @@ public class DepotHeadService {
                 List<JSONObject> list = new ArrayList<>();
                 agreedList.stream().forEach(agreedDelivery -> {
                     JSONObject json = new JSONObject();
-                    json.put("datetime", agreedDelivery.getDatetime());
+                    String datetime = agreedDelivery.getDatetime();
+                    String end = agreedDelivery.getDatetimeEnd();
+                    if(datetime.equals(end)) {
+                        json.put("datetime", datetime);
+                    } else {
+                        String[] endStr = end.split(" ");
+                        json.put("datetime", datetime.concat("-").concat(endStr[1]));
+                    }
+//                    json.put("datetime", agreedDelivery.getDatetime());
                     json.put("name", agreedDelivery.getName());
                     json.put("isDefault", agreedDelivery.getIsDefault()==1?true:false);
                     list.add(json);
@@ -2374,7 +2382,7 @@ public class DepotHeadService {
     }
 
     @Transactional(value = "transactionManager", rollbackFor = Exception.class)
-    public void deliveryAgreed(String number, String datetime, HttpServletRequest request) throws Exception {
+    public void deliveryAgreed(String number, String datetime, String end, HttpServletRequest request) throws Exception {
         // 是否有此配送單
         DepotHead depotHead = depotHeadMapper.selectByNumber(number);
         if(depotHead == null) {
@@ -2395,12 +2403,22 @@ public class DepotHeadService {
             throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_DELIVERY_AGREED_VALID_CODE,
                     ExceptionConstants.DEPOT_HEAD_DELIVERY_AGREED_VALID_MSG);
         }
+        if(end != null && !end.isEmpty()) {
+            LocalDateTime dt_end = LocalDateTime.parse(end, formatterChange);
+            if(dt_end.isBefore(dt)) {
+                throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_DELIVERY_AGREED_OVER_CODE,
+                        ExceptionConstants.DEPOT_HEAD_DELIVERY_AGREED_OVER_MSG);
+            }
+        } else {
+            end = datetime;
+        }
 
         DepotDetail detail = depotHeadMapper.selectDetailByHeaderId(depotHead.getId());
         depotHeadMapper.updateAgreedDelivery(detail.getId());
         AgreedDelivery agreedDelivery = new AgreedDelivery();
         agreedDelivery.setDetailId(detail.getId());
         agreedDelivery.setDatetime(datetime);
+        agreedDelivery.setDatetimeEnd(end);
         UserCar user = userService.getCurrentCarUser();
         if(user == null) {
             agreedDelivery.setName("Server");

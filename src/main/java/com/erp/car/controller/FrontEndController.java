@@ -329,7 +329,7 @@ public class FrontEndController {
     @ApiOperation(value = "設定約配日")
     public Object deliveryAgreed(@RequestBody AgreedDeliveryVo4Body agreed, HttpServletRequest request) throws Exception {
         JSONObject result = ExceptionConstants.standardSuccess();
-        depotHeadService.deliveryAgreed(agreed.getNumber(), agreed.getDatetime(), request);
+        depotHeadService.deliveryAgreed(agreed.getNumber(), agreed.getDatetime(), agreed.getDatetimeEnd(), request);
         return result;
     }
 

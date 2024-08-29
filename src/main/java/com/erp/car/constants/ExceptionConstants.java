@@ -341,6 +341,8 @@ public class ExceptionConstants {
     public static final String DEPOT_HEAD_UN_DETAIL_GET_FAILED_MSG = "抱歉，查無此訂單配送細節id";
     public static final int DEPOT_HEAD_DELIVERY_AGREED_VALID_CODE = 8000025;
     public static final String DEPOT_HEAD_DELIVERY_AGREED_VALID_MSG = "約配時間不得小於現在時間";
+    public static final int DEPOT_HEAD_DELIVERY_AGREED_OVER_CODE = 8000026;
+    public static final String DEPOT_HEAD_DELIVERY_AGREED_OVER_MSG = "起始約配時間不得小於結束時間";
 
     /**
      *  单据信息
