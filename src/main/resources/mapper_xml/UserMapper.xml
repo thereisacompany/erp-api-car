@@ -80,7 +80,7 @@
     <if test="distinct">
       distinct
     </if>
-    jc.id, username, login_name, password, jc.Status,jc.supplier_id,license_plate_number,
+    jc.id, username, login_name, password, js.enabled Status,jc.supplier_id,license_plate_number,
     phone_num, telephone, email, birthday, sex
     from jsh_caruser jc
     left join jsh_vehicle jv on jc.supplier_id = jv.driver

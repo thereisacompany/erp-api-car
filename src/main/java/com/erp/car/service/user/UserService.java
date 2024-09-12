@@ -295,7 +295,7 @@ public class UserService {
             if (null != list && list.size() == 0) {
                 return ExceptionCodeConstants.UserExceptionCode.USER_NOT_EXIST;
             } else if(list.size() ==1) {
-                if(list.get(0).getStatus()!=0) {
+                if(list.get(0).getStatus()!=1) {
                     return ExceptionCodeConstants.UserExceptionCode.BLACK_USER;
                 }
 //                Long tenantId = list.get(0).getTenantId();
