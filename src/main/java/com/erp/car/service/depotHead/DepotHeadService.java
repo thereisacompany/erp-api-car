@@ -180,12 +180,17 @@ public class DepotHeadService {
                     JSONObject json = new JSONObject();
                     String datetime = agreedDelivery.getDatetime();
                     String end = agreedDelivery.getDatetimeEnd();
-                    if(datetime.equals(end)) {
-                        json.put("datetime", datetime);
+                    if(end != null && !end.isEmpty()) {
+                        if(datetime.equals(end)) {
+                            json.put("datetime", datetime);
+                        } else {
+                            String[] endStr = end.split(" ");
+                            json.put("datetime", datetime.concat("-").concat(endStr[1]));
+                        }
                     } else {
-                        String[] endStr = end.split(" ");
-                        json.put("datetime", datetime.concat("-").concat(endStr[1]));
+                        json.put("datetime", datetime);
                     }
+
 //                    json.put("datetime", agreedDelivery.getDatetime());
                     json.put("name", agreedDelivery.getName());
                     json.put("isDefault", agreedDelivery.getIsDefault()==1?true:false);
