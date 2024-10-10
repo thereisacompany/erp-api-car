@@ -1,15 +1,20 @@
 package com.erp.car.report.vo;
 
+import lombok.Data;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+@Data
 public class MaterialsListVo {
 
     private Long id;
     private Long headerId;
 
     private String materialsList;
+    private String materialsModel;
+    private String materialsStandard;
 
     private Long categoryId;
 

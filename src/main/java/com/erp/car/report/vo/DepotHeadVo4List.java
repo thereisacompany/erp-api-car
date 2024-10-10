@@ -27,7 +27,8 @@ public class DepotHeadVo4List extends DepotHead{
 
     private Long materialId;
     private String materialsList;
-
+    private String materialsModel;
+    private String materialsStandard;
     private Long categoryId;
 
     private String materialNumber;
@@ -56,7 +57,7 @@ public class DepotHeadVo4List extends DepotHead{
 
     private BigDecimal debt;
 
-    private BigDecimal materialCount;
+    private String materialCount;
 
     /**
      * 是否有付款单或收款单
@@ -168,6 +169,22 @@ public class DepotHeadVo4List extends DepotHead{
 
     public void setMaterialsList(String materialsList) {
         this.materialsList = materialsList;
+    }
+
+    public String getMaterialsModel() {
+        return materialsModel;
+    }
+
+    public void setMaterialsModel(String materialsModel) {
+        this.materialsModel = materialsModel;
+    }
+
+    public String getMaterialsStandard() {
+        return materialsStandard;
+    }
+
+    public void setMaterialsStandard(String materialsStandard) {
+        this.materialsStandard = materialsStandard;
     }
 
     public Long getCategoryId() {
@@ -282,11 +299,11 @@ public class DepotHeadVo4List extends DepotHead{
         this.debt = debt;
     }
 
-    public BigDecimal getMaterialCount() {
+    public String getMaterialCount() {
         return materialCount;
     }
 
-    public void setMaterialCount(BigDecimal materialCount) {
+    public void setMaterialCount(String materialCount) {
         this.materialCount = materialCount;
     }
 

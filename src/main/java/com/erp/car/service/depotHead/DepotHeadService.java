@@ -529,7 +529,7 @@ public class DepotHeadService {
                     if(materialsListMap!=null) {
                         MaterialsListVo vo = materialsListMap.get(mKey);
                         dh.setMaterialsList(vo.getMaterialsList());
-                        dh.setMaterialCount(vo.getMaterialCount());
+                        dh.setMaterialCount(vo.getMaterialCount().stripTrailingZeros().toPlainString());
                     }
                     //商品总数量
 //                    if(materialCountListMap!=null) {
@@ -1310,9 +1310,11 @@ public class DepotHeadService {
                             }
                         }
                         dh.setMaterialsList(materialsList);
+                        dh.setMaterialsModel(vo.getMaterialsModel());
+                        dh.setMaterialsStandard(vo.getMaterialsStandard());
                         dh.setCategoryId(vo.getCategoryId());
                         dh.setMaterialNumber(vo.getMaterialNumber());
-                        dh.setMaterialCount(vo.getMaterialCount());
+                        dh.setMaterialCount(vo.getMaterialCount().stripTrailingZeros().toPlainString());
                         dh.setDepotList(vo.getDepotList());
                     }
                     dh.setCreatorName(userService.getUser(dh.getCreator()).getUsername());
@@ -1397,7 +1399,7 @@ public class DepotHeadService {
                         dh.setMaterialsList(materialsList);
                         dh.setCategoryId(vo.getCategoryId());
                         dh.setMaterialNumber(vo.getMaterialNumber());
-                        dh.setMaterialCount(vo.getMaterialCount());
+                        dh.setMaterialCount(vo.getMaterialCount().stripTrailingZeros().toPlainString());
                         dh.setDepotList(vo.getDepotList());
                     }
                     dh.setCreatorName(userService.getUser(dh.getCreator()).getUsername());
