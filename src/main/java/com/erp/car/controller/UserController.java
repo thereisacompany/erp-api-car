@@ -231,13 +231,13 @@ public class UserController {
     @ApiOperation(value = "更新密码")
     public String updatePwd(@RequestBody JSONObject jsonObject, HttpServletRequest request)throws Exception {
         Integer flag = 0;
-        Map<String, Object> objectMap = new HashMap<String, Object>();
+        Map<String, Object> objectMap = new HashMap<>();
         try {
             String info = "";
             Long userId = jsonObject.getLong("CaruserId");
             String oldpwd = jsonObject.getString("oldpassword");
             String password = jsonObject.getString("password");
-            User user = userService.getUser(userId);
+            UserCar user = userService.getCarUser(userId);
             //必须和原始密码一致才可以更新密码
             if (oldpwd.equalsIgnoreCase(user.getPassword())) {
                 user.setPassword(password);
@@ -245,7 +245,7 @@ public class UserController {
                 info = "修改成功";
             } else {
                 flag = 2; //原始密码输入错误
-                info = "原始密码输入错误";
+                info = "原始密碼輸入錯誤";
             }
             objectMap.put("status", flag);
             if(flag > 0) {
@@ -254,7 +254,7 @@ public class UserController {
                 return returnJson(objectMap, ERROR, ErpInfo.ERROR.code);
             }
         } catch (Exception e) {
-            logger.error(">>>>>>>>>>>>>修改用户ID为 ： " + jsonObject.getLong("userId") + "密码信息失败", e);
+            logger.error(">>>>>>>>>>>>>修改用户ID为 ： " + jsonObject.getLong("CaruserId") + "密码信息失败", e);
             flag = 3;
             objectMap.put("status", flag);
             return returnJson(objectMap, ERROR, ErpInfo.ERROR.code);

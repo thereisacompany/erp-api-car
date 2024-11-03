@@ -30,5 +30,7 @@ public interface UserMapper {
 
     int updateByPrimaryKeySelective(User record);
 
+    int updateCarByPrimaryKeySelective(UserCar record);
+
     int updateByPrimaryKey(User record);
 }

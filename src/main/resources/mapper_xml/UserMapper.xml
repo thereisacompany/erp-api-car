@@ -103,6 +103,7 @@
     select
     jc.id as id,
     jc.username as username,
+    jc.password as password,
     "" as membernumber,
     js.license_plate as licenseplate
     from jsh_caruser jc
@@ -350,6 +351,27 @@
       </if>
       <if test="remark != null">
         remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="tenantId != null">
+        tenant_id = #{tenantId,jdbcType=BIGINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateCarByPrimaryKeySelective" parameterType="com.erp.car.report.entities.UserCar">
+    update jsh_caruser
+    <set>
+      <if test="username != null">
+        login_name = #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        password = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        Status = #{status,jdbcType=TINYINT},
+      </if>
+      <if test="supplierId != null">
+        supplier_id = #{supplierId,jdbcType=BIGINT},
       </if>
       <if test="tenantId != null">
         tenant_id = #{tenantId,jdbcType=BIGINT},

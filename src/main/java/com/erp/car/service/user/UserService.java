@@ -198,13 +198,13 @@ public class UserService {
      * @return int
      */
     @Transactional(value = "transactionManager", rollbackFor = Exception.class)
-    public int updateUserByObj(User user) throws Exception{
-        logService.insertLog("用户",
+    public int updateUserByObj(UserCar user) throws Exception{
+        logService.insertLog("司機",
                 new StringBuffer(BusinessConstants.LOG_OPERATION_TYPE_EDIT).append(user.getId()).toString(),
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest());
         int result=0;
         try{
-            result=userMapper.updateByPrimaryKeySelective(user);
+            result=userMapper.updateCarByPrimaryKeySelective(user);
         }catch(Exception e){
             JshException.writeFail(logger, e);
         }
