@@ -254,12 +254,12 @@ public class DepotHeadService {
         }
 
         // todo 配送訂單，要修改為完成，需先檢查是否有上傳檔案
-        if(status == 5) {
-            if(detail.getFilePath().isEmpty()) {
-                throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_STATUS_DONE_NO_FILE_ERROR_CODE,
-                        ExceptionConstants.DEPOT_HEAD_STATUS_DONE_NO_FILE_ERROR_MSG);
-            }
-        }
+//        if(status == 5) {
+//            if(detail.getFilePath().isEmpty()) {
+//                throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_STATUS_DONE_NO_FILE_ERROR_CODE,
+//                        ExceptionConstants.DEPOT_HEAD_STATUS_DONE_NO_FILE_ERROR_MSG);
+//            }
+//        }
 
         try{
             detail.setStatus(String.valueOf(status));

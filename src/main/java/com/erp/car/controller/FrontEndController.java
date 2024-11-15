@@ -85,7 +85,7 @@ public class FrontEndController {
         } catch(Exception e){
             e.printStackTrace();
             res.code = 500;
-            res.data = "获取数据失败";
+            res.data = "獲取資料失敗";
         }
         return res;
     }
@@ -151,7 +151,7 @@ public class FrontEndController {
         } catch(Exception e){
             e.printStackTrace();
             res.code = 500;
-            res.data = "获取数据失败";
+            res.data = "獲取資料失敗";
         }
         return res;
     }
@@ -270,7 +270,7 @@ public class FrontEndController {
         } catch (Exception e) {
             e.printStackTrace();
             res.code = 500;
-            res.data = "获取数据失败";
+            res.data = "獲取資料失敗";
         }
         return res;
     }
