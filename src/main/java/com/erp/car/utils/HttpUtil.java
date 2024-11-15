@@ -2,6 +2,12 @@ package com.erp.car.utils;
 
 import com.alibaba.fastjson.JSONObject;
 import com.erp.car.exception.BusinessRunTimeException;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.context.request.RequestAttributes;
@@ -13,13 +19,37 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.Set;
 import java.util.StringJoiner;
 
 public class HttpUtil {
 	
-	private static final String sRequest = "request"; 
+	private static final String sRequest = "request";
+
+	public static InputStream getHttpInputStream(String requestUrl) {
+
+		try {
+			CloseableHttpClient httpClient = HttpClients.createDefault();
+
+			HttpGet httpGet = new HttpGet(requestUrl);
+
+			CloseableHttpResponse response = httpClient.execute(httpGet);
+
+			if (response.getStatusLine().getStatusCode() == org.apache.http.HttpStatus.SC_OK) {
+				HttpEntity entity = response.getEntity();
+
+				return entity.getContent();
+			}
+		} catch (ClientProtocolException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 
 	public static HttpServletRequest getHttpServletRequest() {
 		RequestAttributes requestAttributes = RequestContextHolder.currentRequestAttributes();

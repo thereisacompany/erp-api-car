@@ -1,6 +1,7 @@
 package com.erp.car.controller;
 
 import com.erp.car.report.entities.SystemConfig;
+import com.erp.car.service.GcsFileService;
 import com.erp.car.service.depot.DepotService;
 import com.erp.car.service.systemConfig.SystemConfigService;
 import com.erp.car.service.user.UserService;
@@ -28,6 +29,8 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /**
@@ -53,6 +56,9 @@ public class SystemConfigController {
     @Resource
     private SystemConfigService systemConfigService;
 
+    @Resource
+    private GcsFileService gcsFileService;
+
     @Value(value="${file.path}")
     private String filePath;
 
@@ -61,6 +67,8 @@ public class SystemConfigController {
 
     @Value(value="${spring.servlet.multipart.max-request-size}")
     private Long maxRequestSize;
+
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
 
     /**
      * 获取当前租户的配置信息
@@ -113,13 +121,13 @@ public class SystemConfigController {
     }
 
     /**
-     * 文件上传统一方法
+     * 文件上傳統一方法
      * @param request
      * @param response
      * @return
      */
     @PostMapping(value = "/upload")
-    @ApiOperation(value = "文件上传统一方法")
+    @ApiOperation(value = "文件上傳統一方法")
     public BaseResponseInfo upload(HttpServletRequest request, HttpServletResponse response) {
         BaseResponseInfo res = new BaseResponseInfo();
         try {
@@ -134,18 +142,19 @@ public class SystemConfigController {
             String token = request.getHeader("X-Access-Token");
             Long tenantId = Tools.getTenantIdByToken(token);
             bizPath = bizPath + File.separator + tenantId;
-            savePath = this.uploadLocal(file, bizPath, name);
+//            savePath = this.uploadLocal(file, bizPath, name);
+            savePath = gcsFileService.uploadFile(file, LocalDate.now().format(formatter));
             if(StringUtil.isNotEmpty(savePath)){
                 res.code = 200;
                 res.data = savePath;
             }else {
                 res.code = 500;
-                res.data = "上传失败！";
+                res.data = "上傳失敗！";
             }
         } catch (Exception e) {
             e.printStackTrace();
             res.code = 500;
-            res.data = "上传失败！";
+            res.data = "上傳失敗！";
         }
         return res;
     }
