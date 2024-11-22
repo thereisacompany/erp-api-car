@@ -530,6 +530,8 @@ public class ExceptionConstants {
     public static final String DEPOT_HEAD_STATUS_ALREADY_DONE_MSG = "此訂單已配送完成，不得再設定為其他狀態。";
     public static final int DEPOT_HEAD_STATUS_ALREADY_ERROR_CODE = 13000003;
     public static final String DEPOT_HEAD_STATUS_ALREADY_ERROR_MSG = "此訂單配送異常，不得再設定為其他狀態。";
+    public static final int DEPOT_HEAD_STATUS_ALREADY_CANCEL_CODE = 13000004;
+    public static final String DEPOT_HEAD_STATUS_ALREADY_CANCEL_MSG = "此訂單已作廢，不得再設定為其他狀態。";
     public static final int DEPOT_HEAD_STATUS_DONE_NO_FILE_ERROR_CODE = 13000004;
     public static final String DEPOT_HEAD_STATUS_DONE_NO_FILE_ERROR_MSG = "此配送單未上傳檔案，無法完成訂單。";
 

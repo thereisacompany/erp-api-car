@@ -112,6 +112,10 @@ public class DepotHeadService {
     @Resource
     private LogService logService;
 
+    private final String STATUS_DONE = "5";
+    private final String STATUS_ERROR = "6";
+    private final String STATUS_CANCEL = "7";
+
     public DepotHead getDepotHead(long id)throws Exception {
         DepotHead result=null;
         try{
@@ -243,14 +247,17 @@ public class DepotHeadService {
                     ExceptionConstants.DEPOT_HEAD_NOT_ASSIGN_DRIVER_MSG);
         }
 
-        // 若配送單的狀態為完成(5)或異常(6)，不得再改為其他狀態
-        if(detail.getStatus().equals("5")) {
-            throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_STATUS_ALREADY_DONE_CODE,
-                    ExceptionConstants.DEPOT_HEAD_STATUS_ALREADY_DONE_MSG);
-        }
-        if(detail.getStatus().equals("6")) {
-            throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_STATUS_ALREADY_ERROR_CODE,
-                    ExceptionConstants.DEPOT_HEAD_STATUS_ALREADY_ERROR_MSG);
+        // 若配送單的狀態為完成(5)或異常(6)或作廢(7)，不得再改為其他狀態
+        switch (detail.getStatus()) {
+            case STATUS_DONE:
+                throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_STATUS_ALREADY_DONE_CODE,
+                        ExceptionConstants.DEPOT_HEAD_STATUS_ALREADY_DONE_MSG);
+            case STATUS_ERROR:
+                throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_STATUS_ALREADY_ERROR_CODE,
+                        ExceptionConstants.DEPOT_HEAD_STATUS_ALREADY_ERROR_MSG);
+            case STATUS_CANCEL:
+                throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_STATUS_ALREADY_CANCEL_CODE,
+                        ExceptionConstants.DEPOT_HEAD_STATUS_ALREADY_CANCEL_MSG);
         }
 
         // todo 配送訂單，要修改為完成，需先檢查是否有上傳檔案
@@ -262,6 +269,7 @@ public class DepotHeadService {
 //        }
 
         try{
+            String oldStatus = detail.getStatus();
             detail.setStatus(String.valueOf(status));
             depotHeadMapper.updateDetail(detail);
 
@@ -272,7 +280,9 @@ public class DepotHeadService {
             record.setDate(LocalDateTime.now().format(formatterChange));
             depotHeadMapper.insertDetailRecord(record);
 
-            logService.insertLog("訂單狀態", BusinessConstants.LOG_OPERATION_TYPE_EDIT, request);
+            logService.insertLog("訂單狀態變更",
+                    BusinessConstants.LOG_OPERATION_TYPE_EDIT.concat(depotHead.getNumber())
+                            .concat("("+oldStatus+" -> "+status+")"), request);
         } catch (Exception e) {
             JshException.writeFail(logger, e);
         }
@@ -596,10 +606,11 @@ public class DepotHeadService {
         String remark = StringUtil.getInfo(search, "remark");
         Long driverId = StringUtil.parseStrLong(StringUtil.getInfo(search, "driverId"));
 
-        // 狀態(0:未派發 1:已派發 2:已接單 3:聯絡中 4:配送中 5:配送完成 6:異常)
+        // 狀態(0:未派發 1:已派發 2:已接單 3:聯絡中 4:配送中 5:配送完成 6:異常 7:作廢)
         // 5
         // 1、2、3、4
         // 6
+        // 7
         AtomicInteger all = new AtomicInteger(0);
         AtomicInteger done = new AtomicInteger(0);
         AtomicInteger doing = new AtomicInteger(0);
@@ -608,10 +619,10 @@ public class DepotHeadService {
 
         List<DepotHeadStatusVo4List> list = countDepotHead(driverId, type, subType, roleType, hasDebt, status, purchaseStatus, number, linkNumber,
                 beginTime, endTime, materialParam, keyword, organId, creator, depotId, accountId, remark);
-        list.stream().forEach(deliveryStatus->{
-            int count = deliveryStatus.getStatusCount();
+        list.stream().forEach(ds->{
+            int count = ds.getStatusCount();
             all.addAndGet(count);
-            switch (deliveryStatus.getDepotStatus()) {
+            switch (ds.getDepotStatus()) {
                 case 1:
                 case 2:
                 case 3:
@@ -622,8 +633,10 @@ public class DepotHeadService {
                     done.addAndGet(count);
                     break;
                 case 6:
-                    doing.addAndGet(count);
+//                    doing.addAndGet(count);
                     abnormal.addAndGet(count);
+                    break;
+                default:
                     break;
             }
         });

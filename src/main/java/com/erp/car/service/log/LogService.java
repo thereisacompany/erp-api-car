@@ -47,8 +47,8 @@ public class LogService {
                     log.setUserId(userId);
                     log.setOperation(moduleName);
                     log.setClientIp(getLocalIp(request));
-//                    log.setCreateAt(new Date());
-                    Byte status = 1;
+                    log.setCreateTime(new Date());
+                    Byte status = 0;
                     log.setStatus(status);
                     log.setContent(content);
                     logMapper.insertSelective(log);
