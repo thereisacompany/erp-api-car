@@ -202,11 +202,25 @@ public class UserController {
     public BaseResponseInfo logout(HttpServletRequest request, HttpServletResponse response)throws Exception {
         BaseResponseInfo res = new BaseResponseInfo();
         try {
-            redisService.deleteObjectBySession(request,"CaruserId");
+            Long userId = Long.parseLong(redisService.getObjectFromSessionByKey(request,"CaruserId").toString());
+            if(userId != null) {
+                User user = userService.getUser(userId);
+
+                redisService.deleteObjectBySession(request, "CaruserId");
+
+                logService.insertLogWithUserId(user.getId(), "司機",
+                        new StringBuffer(BusinessConstants.LOG_OPERATION_TYPE_LOGOUT).append(user.getLoginName()).toString(),
+                        ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest());
+                res.code = 200;
+                res.data = "退出成功";
+            } else {
+                res.code = 200;
+                res.data = "查無userId, 或token已被刪除";
+            }
         } catch(Exception e){
             e.printStackTrace();
             res.code = 500;
-            res.data = "退出失败";
+            res.data = "退出失敗";
         }
         return res;
     }
