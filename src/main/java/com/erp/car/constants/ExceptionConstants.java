@@ -343,6 +343,8 @@ public class ExceptionConstants {
     public static final String DEPOT_HEAD_DELIVERY_AGREED_VALID_MSG = "約配時間不得小於現在時間";
     public static final int DEPOT_HEAD_DELIVERY_AGREED_OVER_CODE = 8000026;
     public static final String DEPOT_HEAD_DELIVERY_AGREED_OVER_MSG = "起始約配時間不得小於結束時間";
+    public static final int DEPOT_HEAD_DELIVERY_AGREED_DATE_ERROR_CODE = 8000027;
+    public static final String DEPOT_HEAD_DELIVERY_AGREED_DATE_ERROR_MSG = "約配時間有誤，請重新設置!!";
 
     /**
      *  单据信息

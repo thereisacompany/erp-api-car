@@ -2417,20 +2417,26 @@ public class DepotHeadService {
             }
         }
 
-        // if datetime < now
-        LocalDateTime dt = LocalDateTime.parse(datetime, formatterChange);
-        if(LocalDateTime.now().isAfter(dt)) {
-            throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_DELIVERY_AGREED_VALID_CODE,
-                    ExceptionConstants.DEPOT_HEAD_DELIVERY_AGREED_VALID_MSG);
-        }
-        if(end != null && !end.isEmpty()) {
-            LocalDateTime dt_end = LocalDateTime.parse(end, formatterChange);
-            if(dt_end.isBefore(dt)) {
-                throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_DELIVERY_AGREED_OVER_CODE,
-                        ExceptionConstants.DEPOT_HEAD_DELIVERY_AGREED_OVER_MSG);
+        try {
+            // if datetime < now
+            LocalDateTime dt = LocalDateTime.parse(datetime, formatterChange);
+            if (LocalDateTime.now().isAfter(dt)) {
+                throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_DELIVERY_AGREED_VALID_CODE,
+                        ExceptionConstants.DEPOT_HEAD_DELIVERY_AGREED_VALID_MSG);
             }
-        } else {
-            end = datetime;
+            if (end != null && !end.isEmpty()) {
+                LocalDateTime dt_end = LocalDateTime.parse(end, formatterChange);
+                if (dt_end.isBefore(dt)) {
+                    throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_DELIVERY_AGREED_OVER_CODE,
+                            ExceptionConstants.DEPOT_HEAD_DELIVERY_AGREED_OVER_MSG);
+                }
+            } else {
+                end = datetime;
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+            throw new BusinessRunTimeException(ExceptionConstants.DEPOT_HEAD_DELIVERY_AGREED_DATE_ERROR_CODE,
+                    ExceptionConstants.DEPOT_HEAD_DELIVERY_AGREED_DATE_ERROR_MSG);
         }
 
         DepotDetail detail = depotHeadMapper.selectDetailByHeaderId(depotHead.getId());
