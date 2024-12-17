@@ -363,7 +363,7 @@ public class DepotHeadService {
                 String[] begin = beginTime.split(" ");
                 String[] end = endTime.split(" ");
                 if (begin[0].equals(end[0])) {
-                    beginTime = null;
+//                    beginTime = null;
                     dStatus = 1;
                 }
             }
@@ -663,7 +663,7 @@ public class DepotHeadService {
                 String[] begin = beginTime.split(" ");
                 String[] end = endTime.split(" ");
                 if (begin[0].equals(end[0])) {
-                    beginTime = null;
+//                    beginTime = null;
                     dStatus = 1;
                 }
             }

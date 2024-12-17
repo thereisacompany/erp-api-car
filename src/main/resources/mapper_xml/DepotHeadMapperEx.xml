@@ -222,13 +222,18 @@
             and dh.link_number like #{bindLinkNumber}
         </if>
         <if test="beginTime != null">
-            and jdd.assign_date >= #{beginTime}
+            <if test="dStatus == null">
+                and jdd.assign_date >= #{beginTime}
+            </if>
         </if>
         <if test="endTime != null">
             and jdd.assign_date &lt;= #{endTime}
         </if>
         <if test="dStatus != null">
-            and jdd.status not in (0,5)
+            and jdd.status in (1,2,3,4)
+            or (jdd.assign_date >= #{beginTime}
+            and jdd.assign_date &lt;= #{endTime}
+            and jdd.status in (6))
         </if>
 
         <if test="keyword != null and keyword !=''">
@@ -318,13 +323,18 @@
             and dh.link_number like #{bindLinkNumber}
         </if>
         <if test="beginTime != null">
-            and jdd.assign_date >= #{beginTime}
+            <if test="dStatus == null">
+                and jdd.assign_date >= #{beginTime}
+            </if>
         </if>
         <if test="endTime != null">
             and jdd.assign_date &lt;= #{endTime}
         </if>
         <if test="dStatus != null">
-            and jdd.status not in (0,5)
+            and jdd.status in (1,2,3,4)
+            or (jdd.assign_date >= #{beginTime}
+            and jdd.assign_date &lt;= #{endTime}
+            and jdd.status in (6))
         </if>
 
         <if test="materialParam != null and materialParam !=''">
