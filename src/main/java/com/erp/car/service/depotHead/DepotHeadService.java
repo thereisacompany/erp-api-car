@@ -359,14 +359,16 @@ public class DepotHeadService {
 
         try{
             Integer dStatus = null;
-            if(beginTime != null && endTime != null) {
+            if(StringUtil.isNotEmpty(beginTime) && StringUtil.isNotEmpty(endTime)) {
                 String[] begin = beginTime.split(" ");
                 String[] end = endTime.split(" ");
                 if (begin[0].equals(end[0])) {
-//                    beginTime = null;
                     dStatus = 1;
                 }
             }
+//            if(StringUtil.isEmpty(beginTime) && StringUtil.isEmpty(endTime)) {
+//                endTime = LocalDate.now().minusDays(1).format(formatterChangeDate).concat(" 23:59:59");
+//            }
 
             List<DepotHeadVo4List> list = depotHeadMapperEx.selectCarByConditionDepotHead(driverId, type, subType, number, linkNumber,
                     beginTime, endTime, dStatus, keyword, organId, MNumber, creator, depotId, counterId, accountId, remark, offset, rows);
@@ -659,14 +661,16 @@ public class DepotHeadService {
             beginTime = Tools.parseDayToTime(beginTime,BusinessConstants.DAY_FIRST_TIME);
             endTime = Tools.parseDayToTime(endTime,BusinessConstants.DAY_LAST_TIME);
             Integer dStatus = null;
-            if(beginTime != null && endTime != null) {
+            if(StringUtil.isNotEmpty(beginTime) && StringUtil.isNotEmpty(endTime)) {
                 String[] begin = beginTime.split(" ");
                 String[] end = endTime.split(" ");
                 if (begin[0].equals(end[0])) {
-//                    beginTime = null;
                     dStatus = 1;
                 }
             }
+//            if(StringUtil.isEmpty(beginTime) && StringUtil.isEmpty(endTime)) {
+//                endTime = LocalDate.now().minusDays(1).format(formatterChangeDate).concat(" 23:59:59");
+//            }
             result=depotHeadMapperEx.countsByDepotHead(driverId, type, subType, creatorArray, hasDebt, statusArray, purchaseStatusArray,
                     number, linkNumber, beginTime, endTime, dStatus, materialParam, keyword, organId, organArray, creator,
                     depotId, depotArray, accountId, remark);

@@ -223,17 +223,21 @@
         </if>
         <if test="beginTime != null">
             <if test="dStatus == null">
-                and jdd.assign_date >= #{beginTime}
+                and dh.agreed_delivery >= #{beginTime}
             </if>
         </if>
         <if test="endTime != null">
-            and jdd.assign_date &lt;= #{endTime}
+            and dh.agreed_delivery &lt;= #{endTime}
         </if>
+        and dh.agreed_delivery IS NOT NULL
         <if test="dStatus != null">
             and jdd.status in (1,2,3,4)
-            or (jdd.assign_date >= #{beginTime}
-            and jdd.assign_date &lt;= #{endTime}
+            or (dh.agreed_delivery >= #{beginTime}
+            and dh.agreed_delivery &lt;= #{endTime}
             and jdd.status in (6))
+        </if>
+        <if test="dStatus == null">
+            and jdd.status in (5,6)
         </if>
 
         <if test="keyword != null and keyword !=''">
@@ -324,17 +328,21 @@
         </if>
         <if test="beginTime != null">
             <if test="dStatus == null">
-                and jdd.assign_date >= #{beginTime}
+                and dh.agreed_delivery >= #{beginTime}
             </if>
         </if>
         <if test="endTime != null">
-            and jdd.assign_date &lt;= #{endTime}
+            and dh.agreed_delivery &lt;= #{endTime}
         </if>
+        and dh.agreed_delivery IS NOT NULL
         <if test="dStatus != null">
             and jdd.status in (1,2,3,4)
-            or (jdd.assign_date >= #{beginTime}
-            and jdd.assign_date &lt;= #{endTime}
+            or (dh.agreed_delivery >= #{beginTime}
+            and dh.agreed_delivery &lt;= #{endTime}
             and jdd.status in (6))
+        </if>
+        <if test="dStatus == null">
+            and jdd.status in (5,6)
         </if>
 
         <if test="materialParam != null and materialParam !=''">
