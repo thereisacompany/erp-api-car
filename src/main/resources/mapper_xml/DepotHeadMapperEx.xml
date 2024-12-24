@@ -236,8 +236,11 @@
             and dh.agreed_delivery &lt;= #{endTime}
             and jdd.status in (6))
         </if>
-        <if test="dStatus == null">
-            and jdd.status in (5,6)
+
+        <if test="keyword == null or keyword.isEmpty()">
+            <if test="dStatus == null">
+                and jdd.status in (5,6)
+            </if>
         </if>
 
         <if test="keyword != null and keyword !=''">
@@ -341,8 +344,10 @@
             and dh.agreed_delivery &lt;= #{endTime}
             and jdd.status in (6))
         </if>
-        <if test="dStatus == null">
-            and jdd.status in (5,6)
+        <if test="keyword == null or keyword.isEmpty()">
+            <if test="dStatus == null">
+                and jdd.status in (5,6)
+            </if>
         </if>
 
         <if test="materialParam != null and materialParam !=''">
