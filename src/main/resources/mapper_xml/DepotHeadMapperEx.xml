@@ -231,10 +231,10 @@
         </if>
         and dh.agreed_delivery IS NOT NULL
         <if test="dStatus != null">
-            and jdd.status in (1,2,3,4)
+            and (jdd.status in (1,2,3,4)
             or (dh.agreed_delivery >= #{beginTime}
             and dh.agreed_delivery &lt;= #{endTime}
-            and jdd.status in (6))
+            and jdd.status in (6)))
         </if>
 
         <if test="keyword == null or keyword.isEmpty()">
@@ -339,10 +339,10 @@
         </if>
         and dh.agreed_delivery IS NOT NULL
         <if test="dStatus != null">
-            and jdd.status in (1,2,3,4)
+            and (jdd.status in (1,2,3,4)
             or (dh.agreed_delivery >= #{beginTime}
             and dh.agreed_delivery &lt;= #{endTime}
-            and jdd.status in (6))
+            and jdd.status in (6)))
         </if>
         <if test="keyword == null or keyword.isEmpty()">
             <if test="dStatus == null">
