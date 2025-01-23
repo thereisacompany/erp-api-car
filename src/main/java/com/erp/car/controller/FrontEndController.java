@@ -57,7 +57,7 @@ public class FrontEndController {
     @RequestParam(value = Constants.PAGE_SIZE, required = false) Integer pageSize,
     @RequestParam(value = Constants.CURRENT_PAGE, required = false) Integer currentPage,
     @RequestParam(value = Constants.SEARCH, required = false) String search,
-    HttpServletRequest request)throws Exception {
+    HttpServletRequest request) {
         BaseResponseInfo res = new BaseResponseInfo();
         try {
             Map<String, String> parameterMap = ParamUtils.requestToMap(request);
