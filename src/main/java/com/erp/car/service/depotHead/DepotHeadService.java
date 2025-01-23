@@ -329,8 +329,15 @@ public class DepotHeadService {
                     String.format(ExceptionConstants.DEPOT_HEAD_UN_DETAIL_GET_FAILED_MSG));
         }
         try {
-            detail.setFilePath(path);
-            depotHeadMapper.updateDetail(detail);
+            // TODO 找出相同原始單號的detail資料
+            List<Long> list = depotHeadMapperEx.getIdBySourceNumber(depotHead.getSourceNumber().split("-")[0]);
+            List<DepotDetail> detailList = depotHeadMapper.selectDetailByHeaderIds(list.toArray(new Long[0]));
+
+            detailList.forEach(myDetail->{
+                myDetail.setFilePath(path);
+                depotHeadMapper.updateDetail(myDetail);
+            });
+
         } catch (Exception e) {
             JshException.writeFail(logger, e);
         }
