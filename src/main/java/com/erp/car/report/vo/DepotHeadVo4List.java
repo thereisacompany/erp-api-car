@@ -59,6 +59,8 @@ public class DepotHeadVo4List extends DepotHead{
 
     private String materialCount;
 
+    private String materialsAllList;
+
     /**
      * 是否有付款单或收款单
      */
@@ -305,6 +307,14 @@ public class DepotHeadVo4List extends DepotHead{
 
     public void setMaterialCount(String materialCount) {
         this.materialCount = materialCount;
+    }
+
+    public String getMaterialsAllList() {
+        return materialsAllList;
+    }
+
+    public void setMaterialsAllList(String materialsAllList) {
+        this.materialsAllList = materialsAllList;
     }
 
     public Boolean getHasFinancialFlag() {

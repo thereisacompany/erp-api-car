@@ -1140,6 +1140,17 @@ public class DepotHeadService {
             Map<Long,String> accountMap = accountService.getAccountMap();
             List<DepotHeadVo4List> list = depotHeadMapperEx.getDetailByNumber(number);
             if (null != list) {
+                DepotHeadVo4List data = list.get(0);
+                String sourceNumber = data.getSourceNumber();
+                if(!sourceNumber.isEmpty()) {
+                    sourceNumber = data.getSourceNumber().split("-")[0];
+                    List<String> numbers = depotHeadMapperEx.getNumberBySourceNumber(sourceNumber);
+                    if(!numbers.isEmpty()) {
+                        list.clear();
+                        list = depotHeadMapperEx.getDetailByNumber(numbers.toArray(new String[0]));
+                    }
+                }
+
                 List<Long> idList = new ArrayList<>();
                 List<String> numberList = new ArrayList<>();
                 for (DepotHeadVo4List dh : list) {
@@ -1150,6 +1161,9 @@ public class DepotHeadService {
                 Map<Long,Integer> financialBillNoMap = getFinancialBillNoMapByBillIdList(idList);
                 Map<String,Integer> billSizeMap = getBillSizeMapByLinkNumberList(numberList);
                 Map<String, MaterialsListVo> materialsListMap = findMaterialsListMapByHeaderIdList(idList, Boolean.FALSE);
+
+                DepotHeadVo4List addDh = null;
+                List<String> materialsAllList = new ArrayList<>();
                 for (DepotHeadVo4List dh : list) {
                     if(dh.getCustomNumber()!=null) {
                         dh.setCustomNumber(dh.getCustomNumber().split("-")[0]);
@@ -1162,12 +1176,12 @@ public class DepotHeadService {
                         dh.setAccountName(accountStr);
                     }
                     if(dh.getAccountIdList() != null) {
-                        String accountidlistStr = dh.getAccountIdList().replace("[", "").replace("]", "").replaceAll("\"", "");
-                        dh.setAccountIdList(accountidlistStr);
+                        String accountIdListStr = dh.getAccountIdList().replace("[", "").replace("]", "").replaceAll("\"", "");
+                        dh.setAccountIdList(accountIdListStr);
                     }
                     if(dh.getAccountMoneyList() != null) {
-                        String accountmoneylistStr = dh.getAccountMoneyList().replace("[", "").replace("]", "").replaceAll("\"", "");
-                        dh.setAccountMoneyList(accountmoneylistStr);
+                        String accountMoneyListStr = dh.getAccountMoneyList().replace("[", "").replace("]", "").replaceAll("\"", "");
+                        dh.setAccountMoneyList(accountMoneyListStr);
                     }
                     if(dh.getChangeAmount() != null) {
                         dh.setChangeAmount(dh.getChangeAmount().abs());
@@ -1205,10 +1219,17 @@ public class DepotHeadService {
                         dh.setMaterialNumber(vo.getMaterialNumber());
                         dh.setMaterialCount(vo.getMaterialCount().stripTrailingZeros().toPlainString());
                         dh.setDepotList(vo.getDepotList());
+                        materialsAllList.add(materialsList.concat(" * ").concat(dh.getMaterialCount()));
                     }
                     dh.setCreatorName(userService.getUser(dh.getCreator()).getUsername());
-                    resList.add(dh);
+
+                    if(dh.getNumber().equals(number[0])) {
+                        addDh = dh;
+                    }
+//                    resList.add(dh);
                 }
+                addDh.setMaterialsAllList(String.join(",", materialsAllList));
+                resList.add(addDh);
             }
         }catch(Exception e){
             JshException.readFail(logger, e);
