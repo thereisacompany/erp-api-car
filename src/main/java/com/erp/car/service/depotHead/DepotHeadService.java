@@ -267,17 +267,23 @@ public class DepotHeadService {
 //            }
 //        }
 
+        // TODO 找出相同原始單號的detail資料
+        List<Long> list = depotHeadMapperEx.getIdBySourceNumber(depotHead.getSourceNumber().split("-")[0]);
+        List<DepotDetail> detailList = depotHeadMapper.selectDetailByHeaderIds(list.toArray(new Long[0]));
+
         try{
             String oldStatus = detail.getStatus();
-            detail.setStatus(String.valueOf(status));
-            depotHeadMapper.updateDetail(detail);
+            detailList.forEach(myDetail->{
+                myDetail.setStatus(String.valueOf(status));
+                depotHeadMapper.updateDetail(myDetail);
 
-            // insert jsh_depot_record
-            DepotRecord record = new DepotRecord();
-            record.setDetailId(detail.getId());
-            record.setStatus(String.valueOf(status));
-            record.setDate(LocalDateTime.now().format(formatterChange));
-            depotHeadMapper.insertDetailRecord(record);
+                // insert jsh_depot_record
+                DepotRecord record = new DepotRecord();
+                record.setDetailId(myDetail.getId());
+                record.setStatus(String.valueOf(status));
+                record.setDate(LocalDateTime.now().format(formatterChange));
+                depotHeadMapper.insertDetailRecord(record);
+            });
 
             logService.insertLog("訂單狀態變更",
                     BusinessConstants.LOG_OPERATION_TYPE_EDIT.concat(depotHead.getNumber())

@@ -1004,6 +1004,10 @@
         <bind name="bindSN" value="'%' + sn + '%'"/>
         SELECT number FROM jsh_depot_head jdh WHERE source_number like #{bindSN}
     </select>
+    <select id="getIdBySourceNumber" resultType="java.lang.Long">
+        <bind name="bindSN" value="'%' + sn + '%'"/>
+        SELECT id FROM jsh_depot_head jdh WHERE source_number like #{bindSN}
+    </select>
 
     <update id="batchDeleteDepotHeadByIds">
         update jsh_depot_head

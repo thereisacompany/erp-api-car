@@ -221,6 +221,7 @@ public interface DepotHeadMapperEx {
     List<DepotHeadVo4List> getDetailByNumber(
             @Param("numbers") String[] numbers);
     List<String> getNumberBySourceNumber(@Param("sn") String sn);
+    List<Long> getIdBySourceNumber(@Param("sn") String sn);
 
     int batchDeleteDepotHeadByIds(@Param("updateTime") Date updateTime, @Param("updater") Long updater, @Param("ids") String ids[]);
 

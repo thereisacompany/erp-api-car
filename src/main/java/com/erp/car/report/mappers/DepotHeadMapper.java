@@ -49,6 +49,7 @@ public interface DepotHeadMapper {
     List<AgreedDelivery> selectAgreedDelivery(@Param("detailId") Long detailId);
 
     DepotDetail selectDetailByHeaderId(@Param("headerId") Long headerId);
+    List<DepotDetail> selectDetailByHeaderIds(@Param("ids") Long[] ids);
 
     List<DepotReport> selectDetailReport(@Param("detailId") Long detailId);
 
