@@ -3,6 +3,7 @@ package com.erp.car;
 import com.alibaba.fastjson.JSONObject;
 import com.erp.car.exception.BusinessRunTimeException;
 import com.erp.car.exception.InternalServerError;
+import com.erp.car.utils.BaseResponseInfo;
 import com.erp.car.utils.HttpUtil;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -11,6 +12,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
@@ -47,6 +49,14 @@ public class CustomizedExceptionHandler extends ResponseEntityExceptionHandler {
 		return responseEntity;
 	}
 
+	@ExceptionHandler(MaxUploadSizeExceededException.class)
+	public ResponseEntity<Object> handleMaxUploadSizeExceededException(MaxUploadSizeExceededException e) {
+		BusinessRunTimeException baseException = new BusinessRunTimeException(HttpStatus.OK, "檔案大小超過限制，最大允許 10MB");
+		baseException.initCause(e);
+		doExceptionHandle(baseException);
+		ResponseEntity<Object> responseEntity = baseException.generateResponseEntity();
+		return responseEntity;
+	}
 	
 	@ExceptionHandler(Exception.class)
 	public final ResponseEntity<Object> handleAllException(Exception e, WebRequest request) {
@@ -97,6 +107,7 @@ public class CustomizedExceptionHandler extends ResponseEntityExceptionHandler {
 		BusinessRunTimeException baseException = new BusinessRunTimeException(status, message);
 		baseException.initCause(ex);
 		doExceptionHandle(baseException);
+
 		ResponseEntity<Object> responseEntity = baseException.generateResponseEntity();
 		return responseEntity;
 	}
