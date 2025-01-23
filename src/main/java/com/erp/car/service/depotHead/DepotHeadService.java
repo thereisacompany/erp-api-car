@@ -2342,22 +2342,31 @@ public class DepotHeadService {
                     ExceptionConstants.DEPOT_HEAD_DELIVERY_AGREED_DATE_ERROR_MSG);
         }
 
-        DepotDetail detail = depotHeadMapper.selectDetailByHeaderId(depotHead.getId());
-        depotHeadMapper.updateAgreedDelivery(detail.getId());
-        AgreedDelivery agreedDelivery = new AgreedDelivery();
-        agreedDelivery.setDetailId(detail.getId());
-        agreedDelivery.setDatetime(datetime);
-        agreedDelivery.setDatetimeEnd(end);
-        UserCar user = userService.getCurrentCarUser();
-        if(user == null) {
-            agreedDelivery.setName("Server");
-        } else {
-            agreedDelivery.setName(user.getUsername());
-        }
-        agreedDelivery.setIsDefault(1);
-        depotHeadMapper.insertAgreedDeliver(agreedDelivery);
-        logService.insertLog("司機設定約配日", BusinessConstants.LOG_OPERATION_TYPE_ADD, request);
+        //TODO 找出相同原始單號的detail資料
+        List<Long> list = depotHeadMapperEx.getIdBySourceNumber(depotHead.getSourceNumber().split("-")[0]);
+        List<DepotDetail> detailList = depotHeadMapper.selectDetailByHeaderIds(list.toArray(new Long[0]));
 
+//        DepotDetail detail = depotHeadMapper.selectDetailByHeaderId(depotHead.getId());
+        UserCar user = userService.getCurrentCarUser();
+        String finalEnd = end;
+        detailList.forEach(detail->{
+            depotHeadMapper.updateAgreedDelivery(detail.getId());
+
+            AgreedDelivery agreedDelivery = new AgreedDelivery();
+            agreedDelivery.setDetailId(detail.getId());
+            agreedDelivery.setDatetime(datetime);
+            agreedDelivery.setDatetimeEnd(finalEnd);
+
+            if(user == null) {
+                agreedDelivery.setName("Server");
+            } else {
+                agreedDelivery.setName(user.getUsername());
+            }
+            agreedDelivery.setIsDefault(1);
+            depotHeadMapper.insertAgreedDeliver(agreedDelivery);
+        });
+
+        logService.insertLog("司機設定約配日", BusinessConstants.LOG_OPERATION_TYPE_ADD, request);
     }
 
 }
